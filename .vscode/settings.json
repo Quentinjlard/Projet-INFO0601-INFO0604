@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "*.rmd": "markdown",
+        "ostream": "cpp",
+        "new": "cpp",
+        "stdio.h": "c",
+        "fcntl.h": "c",
+        "errno.h": "c",
+        "fichier_map.h": "c",
+        "fichiermap.h": "c",
+        "includeall.h": "c"
+    }
+}

@@ -2,9 +2,9 @@
 # MAIN CONFIGURATION (to configure)
 #
 
-EXEC = Interface
-OBJECTS = functions.o item.o
-PROJECT_NAME = Interface
+EXEC = menu
+OBJECTS = functions.o item.o publisher.o fileMap.o
+PROJECT_NAME = publisher
 
 #
 # SUFFIXES (must not change it)
@@ -20,11 +20,11 @@ EXEC_O = $(EXEC:=.o)
 OBJECTS_O = $(OBJECTS) $(EXEC_O)
 
 #
-# ARGUMENTS AND COMPILER (to configure)
+# ARGUMENTS AND COMPILER (to configure) -Werror
 #
 
 CC = gcc
-CCFLAGS_STD = -Wall -O3 -Werror
+CCFLAGS_STD = -Wall -O3 
 CCFLAGS_DEBUG = -D _DEBUG_
 CCFLAGS = $(CCFLAGS_STD)
 CCLIBS = -lcurses

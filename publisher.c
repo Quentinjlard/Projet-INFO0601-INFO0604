@@ -9,9 +9,9 @@
  * 
  */
 
-#include "item.h"
+#include "publisher.h"
 
-int main()
+void publisher(int fd_World)
 {
     //Variable Arena
     WINDOW *window, *windowLevel, *windowTools, *windowInformations;
@@ -61,6 +61,19 @@ int main()
     wattron(windowInformations,COLOR_PAIR(2));
     mvwprintw(windowInformations, 1, 1, "Press 'ESQ' to quit ...");
     wrefresh(windowInformations);
+
+    lseek(fd_World,0,SEEK_SET);
+    if(write(fd_World, &level, sizeof(int)) == -1) 
+    {
+        perror("Error writing integer");
+        exit(EXIT_FAILURE);
+    }
+    lseek(fd_World,64,SEEK_CUR);
+    if(write(fd_World, &level, sizeof(int)) == -1) 
+    {
+        perror("Error writing integer");
+        exit(EXIT_FAILURE);
+    }
 
     // Stop 'ESP'
     while((ch = getch()) != 27)

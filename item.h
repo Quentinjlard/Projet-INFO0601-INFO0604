@@ -1,11 +1,7 @@
 #ifndef __ITEM__H__
 #define __ITEM__H__
 
-#include <locale.h>
-#include <stdlib.h>
-#include <ncurses.h>
-
-#include "functions.h"
+#include "includeAll.h"
 
 /**
  * @brief 
@@ -127,10 +123,5 @@ void place_Probe(WINDOW *windowLevel, WINDOW *windowInformations);
  */
 void place_Robot(WINDOW *windowLevel, WINDOW *windowInformations);
 
-/**
- * @brief Function to declare the different colours in the palette.
- * 
- */
-void palette();
 
 #endif
