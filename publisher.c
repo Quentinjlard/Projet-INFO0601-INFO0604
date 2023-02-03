@@ -186,4 +186,10 @@ void publisher(int fd_World)
 
     // Stop ncurses
     ncurses_stop();  
+
+    if(close(fd_World) != 0){
+        perror("Error closed");
+        exit(EXIT_FAILURE);
+    }
+    
 }

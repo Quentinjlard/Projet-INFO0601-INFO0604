@@ -12,5 +12,8 @@
 
 #include "functions.h"
 
+#include "publisher.h"
+
+#include "item.h"
 
 #endif

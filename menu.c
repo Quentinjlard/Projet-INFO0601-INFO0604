@@ -8,8 +8,7 @@
  * @copyright Copyright (c) 2023
  * 
  */
-#include "publisher.h"
-
+#include "includeAll.h"
 
 
 int main()
@@ -98,7 +97,7 @@ int main()
                 exit(EXIT_FAILURE);
             }else
                 mvprintw(27,6,"File created \n");
-
+            
             publisher(fd_World);
         }
         
@@ -113,8 +112,5 @@ int main()
 
     // Stop ncurses
     ncurses_stop();  
-    if(close(fd_World) != 0){
-        perror("Error closed");
-        exit(EXIT_FAILURE);
-    }
+
 }
