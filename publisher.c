@@ -62,6 +62,9 @@ void publisher(int fd_World)
     mvwprintw(windowInformations, 1, 1, "Press 'ESQ' to quit ...");
     wrefresh(windowInformations);
 
+    /**
+     * Erreur ici lors de l'ouverture d'un fichier
+     */
     lseek(fd_World,0,SEEK_SET);
     if(write(fd_World, &level, sizeof(int)) == -1) 
     {

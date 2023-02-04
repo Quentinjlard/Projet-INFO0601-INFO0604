@@ -91,10 +91,12 @@ int main()
             {
                 if(errno == EEXIST)
                     perror("The file already exists.");
-                else
+                else 
+                {
                     perror("Error create.");
-
-                exit(EXIT_FAILURE);
+                    //exit(EXIT_FAILURE);
+                }
+            exit(EXIT_FAILURE); //Il faudrait mettre celui du dessus pour que l'on ouvre le fichier 
             }else
                 mvprintw(27,6,"File created \n");
             
