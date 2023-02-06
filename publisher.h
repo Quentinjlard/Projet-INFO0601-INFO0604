@@ -17,6 +17,6 @@
  * @brief 
  * 
  */
-void publisher(int);
+void publisher(char *);
 
 #endif

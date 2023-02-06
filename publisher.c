@@ -11,12 +11,23 @@
 
 #include "publisher.h"
 
-void publisher(int fd_World)
+void publisher(char* nameWorld)
 {
     //Variable Arena
     WINDOW *window, *windowLevel, *windowTools, *windowInformations;
-    int door = 01, level = 01, ch, posX, posY, color = 9, life=00, bomb = 0;
+    int door = 01, level = 01, ch, posX, posY, color = 9, life=00, bomb = 0, fd_World;
 
+    if((fd_World=open(nameWorld, O_WRONLY|O_RDONLY))==-1)
+    {
+        if(errno == EEXIST)
+            perror("The file already exists.");
+        else 
+        {
+            perror("Error create.");
+            //exit(EXIT_FAILURE);
+        }
+            exit(EXIT_FAILURE); //Il faudrait mettre celui du dessus pour que l'on ouvre le fichier 
+    }
 
     // NCURSES Initialization
     setlocale(LC_ALL, "");

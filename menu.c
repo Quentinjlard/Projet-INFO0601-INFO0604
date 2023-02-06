@@ -94,13 +94,15 @@ int main()
                 else 
                 {
                     perror("Error create.");
-                    //exit(EXIT_FAILURE);
+                    exit(EXIT_FAILURE);
                 }
-            exit(EXIT_FAILURE); //Il faudrait mettre celui du dessus pour que l'on ouvre le fichier 
+            // exit(EXIT_FAILURE); //Il faudrait mettre celui du dessus pour que l'on ouvre le fichier 
             }else
                 mvprintw(27,6,"File created \n");
-            
-            publisher(fd_World);
+
+            close(fd_World); // TRAITER ERREUR
+
+            publisher(nameWorld);
         }
         
 
