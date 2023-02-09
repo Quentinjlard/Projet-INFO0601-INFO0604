@@ -15,7 +15,9 @@ void publisher(char* nameWorld)
 {
     //Variable Arena
     WINDOW *window, *windowLevel, *windowTools, *windowInformations;
-    int door = 01, level = 01, ch, posX, posY, color = 9, life=00, bomb = 0, fd_World;
+    int door = 01, ch, posX, posY, life=00, bomb = 0, fd_World;
+    char level = 01;
+    // fileMap_t fileMap = (fileMap_t)malloc(sizeof(fileMap_t)); 
 
     if((fd_World=open(nameWorld, O_WRONLY|O_RDONLY))==-1)
     {
@@ -76,23 +78,12 @@ void publisher(char* nameWorld)
     /**
      * Erreur ici lors de l'ouverture d'un fichier
      */
-    lseek(fd_World,0,SEEK_SET);
-    if(write(fd_World, &level, sizeof(int)) == -1) 
-    {
-        perror("Error writing integer");
-        exit(EXIT_FAILURE);
-    }
-    lseek(fd_World,64,SEEK_CUR);
-    if(write(fd_World, &level, sizeof(int)) == -1) 
-    {
-        perror("Error writing integer");
-        exit(EXIT_FAILURE);
-    }
+    
+    init_fileMap(fd_World);
 
     // Stop 'ESP'
     while((ch = getch()) != 27)
     {
-        color = 9;
         mvwprintw(windowInformations, 2, 1,"                                       ");
         wrefresh(windowInformations);
         init_Tools(windowTools, level, door);
@@ -112,72 +103,72 @@ void publisher(char* nameWorld)
                 mvwprintw(windowTools, posY, 1, "> Delete");
             
             if(posY == 2 && 66 <= posX && posX <=70)
-                mvwprintw(windowTools, posY, 1, "> Block"), wrefresh(windowTools), place_block(windowLevel,windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Block"), wrefresh(windowTools), place_block(windowLevel,windowInformations,fd_World);
 
             if(posY == 3 && 66 <= posX && posX <=71)
-                mvwprintw(windowTools, posY, 1, "> Ladder"), wrefresh(windowTools), place_ladder(windowLevel, windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Ladder"), wrefresh(windowTools), place_ladder(windowLevel, windowInformations,fd_World);
             
             if(posY == 4 && 66 <= posX && posX <=69)
-                mvwprintw(windowTools, posY, 1, "> Trap"), wrefresh(windowTools), place_Trap(windowLevel,windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Trap"), wrefresh(windowTools), place_Trap(windowLevel,windowInformations, fd_World);
 
             if(posY == 5 && 66 <= posX && posX <=69)
-                mvwprintw(windowTools, posY, 1, "> Gate"), wrefresh(windowTools), place_Gate(windowLevel,windowInformations,windowTools,color);
+                mvwprintw(windowTools, posY, 1, "> Gate"), wrefresh(windowTools), place_Gate(windowLevel,windowInformations,windowTools, fd_World);
 
 
             if(posY == 6 && 66 <= posX && posX <=68)
-                mvwprintw(windowTools, posY, 1, "> Key"), wrefresh(windowTools), place_Key(windowLevel, windowInformations, windowTools, color);
+                mvwprintw(windowTools, posY, 1, "> Key"), wrefresh(windowTools), place_Key(windowLevel, windowInformations, windowTools, fd_World);
 
             if(posY == 7 && posX == 72)
             {   
                 if (door == 1)
-                    door = 99, mvwprintw(windowTools, 7, 10, "%.2d",door);
+                    door = 5, mvwprintw(windowTools, 7, 10, "%.2d",door);
                 else
                     door -- , mvwprintw(windowTools, 7, 10, "%.2d",door);
             }
             
             if(posY == 7 && posX == 75)
             {   
-                if (door == 99)
+                if (door == 5)
                     door = 1, mvwprintw(windowTools, 7, 10, "%.2d",door);
                 else
                     door ++ , mvwprintw(windowTools, 7, 10, "%.2d",door);
             }
 
             if(posY == 7 && 66 <= posX && posX <=69)
-                mvwprintw(windowTools, posY, 1, "> Door"), wrefresh(windowTools), place_Door(windowLevel, windowInformations, door);
+                mvwprintw(windowTools, posY, 1, "> Door"), wrefresh(windowTools), place_Door(windowLevel, windowInformations, door, fd_World);
 
             if(posY == 8 && 66 <= posX && posX <=68)
-                mvwprintw(windowTools, posY, 1, "> Exit"),  wrefresh(windowTools), place_Exit(windowLevel, windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Exit"),  wrefresh(windowTools), place_Exit(windowLevel, windowInformations,fd_World);
 
             if(posY == 9 && 66 <= posX && posX <=69)
-                mvwprintw(windowTools, posY, 1, "> Start"),  wrefresh(windowTools), place_Start(windowLevel, windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Start"),  wrefresh(windowTools), place_Start(windowLevel, windowInformations, fd_World);
 
             if(posY == 10 && 66 <= posX && posX <=69)
-                mvwprintw(windowTools, posY, 1, "> Robot"),  wrefresh(windowTools), place_Robot(windowLevel, windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Robot"),  wrefresh(windowTools), place_Robot(windowLevel, windowInformations, fd_World);
 
             if(posY == 11 && 66 <= posX && posX <=69)
-                mvwprintw(windowTools, posY, 1, "> Probe"), wrefresh(windowTools), place_Probe(windowLevel, windowInformations);
+                mvwprintw(windowTools, posY, 1, "> Probe"), wrefresh(windowTools), place_Probe(windowLevel, windowInformations, fd_World);
 
             if(posY == 12 && 66 <= posX && posX <=68)
-                mvwprintw(windowTools, posY, 1, "> Life"), wrefresh(windowTools), place_Life( windowLevel, windowInformations, life), life++ ;
+                mvwprintw(windowTools, posY, 1, "> Life"), wrefresh(windowTools), place_Life( windowLevel, windowInformations, fd_World), life++ ;
 
             if(posY == 13 && 66 <= posX && posX <=68)
-                mvwprintw(windowTools, posY, 1, "> Bomb"), wrefresh(windowTools), place_bomb( windowLevel, windowInformations, bomb), bomb++;
+                mvwprintw(windowTools, posY, 1, "> Bomb"), wrefresh(windowTools), place_bomb( windowLevel, windowInformations, fd_World), bomb++;
 
-            if(posY == 17 && posX == 67)
+            if(posY == 17 && posX == 67) // Diminuer
             {   
                 if (level == 1)
-                    level = 999,mvwprintw(windowTools, 17, 6, "%.3d",level);
+                    level = 25,mvwprintw(windowTools, 17, 6, "%.3d",level);
                 else
                     level -- , mvwprintw(windowTools, 17, 6, "%.3d",level);
             }
 
-            if(posY == 17 && posX == 73)
+            if(posY == 17 && posX == 73) // Augmenter
             {   
-                if (level == 999)
+                if (level == 25)
                     level = 1,mvwprintw(windowTools, 17, 6, "%.3d",level);
                 else
-                    level ++ , mvwprintw(windowTools, 17, 6, "%.3d",level);
+                    level ++ , mvwprintw(windowTools, 17, 6, "%.3d",level),add_lseek(fd_World, level);
             }
 
             if(posY == 19 && 67 <= posX && posX <=72)

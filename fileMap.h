@@ -17,29 +17,10 @@
 #define HEIGHT 22
 #define WIDTH  62
 
-#define NEAN    0
-#define BLOCK   1
-#define TRAP    2
-#define LIFE    3
-#define BOMBER  4
-#define LADDER  5
-#define START   6
-#define EXIT    7
-#define GATEP   8
-#define GATEG   9
-#define GATEY   10
-#define GATEB   11
-#define KEYP    12
-#define KEYG    13
-#define KEYY    14
-#define KEYB    15
-#define DOOR    16
-#define PROBE   17
-#define ROBOT   18
-
 typedef struct fileMap_type
 {
     off_t map[HEIGHT][WIDTH];
+    off_t debut;
 } fileMap_t;
 
 /**
@@ -53,13 +34,13 @@ fileMap_t *create_fileMap();
  * @brief Add a intem on the fileMap
  * 
  * @param fileMap
+ * @param fileName
  * @param posX
  * @param posY
  * @param item
  * 
- * @return fileMap_t 
  */
-void add_item_fileMap(fileMap_t*,int,int,int);
+void add_item_fileMap(int,int,int,int);
 
 /**
  * @brief remove an item from the fileMap
@@ -88,5 +69,11 @@ off_t read_fileMap(fileMap_t*, int, int);
  * @param fileMap
  */
 void display_fileMap(fileMap_t*);
+
+void init_fileMap(int);
+
+void add_lseek(int,char);
+
+void remove_lseek(int);
 
 #endif

@@ -20,7 +20,7 @@ int main()
     // fileMap_t fileMap;
     char nameWorld[100];
     int fd_World;
-    char ext[4] = ".bin";
+    char ext[] = ".bin";
 
     // fileMap = (fileMap_t*) malloc(sizeof(fileMap_t));
 
@@ -83,10 +83,16 @@ int main()
             curs_set(TRUE);
             mvprintw(25, 6 ," Entering the name of the world : ");
             scanw("%s", nameWorld);
-            mvprintw(26, 6 ,"Vous avez entré : %s\n", nameWorld);
+            // mvprintw(26, 6 ,"Vous avez entré : %s\n", nameWorld);
             noecho();
             curs_set(FALSE);
-            strncat(nameWorld, ext, 4);
+
+            size_t total_len = strlen(nameWorld) + strlen(ext);
+            if (total_len < 100)
+                strncat(nameWorld, ext, 100 - strlen(nameWorld));
+            else
+                mvprintw(27, 6, "Error: insufficient buffer size\n");
+            
             if((fd_World=open(nameWorld, O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR))==-1)
             {
                 if(errno == EEXIST)
@@ -100,15 +106,14 @@ int main()
             }else
                 mvprintw(27,6,"File created \n");
 
-            close(fd_World); // TRAITER ERREUR
+            if(close(fd_World) == -1)
+            {
+                perror("Error closing file");
+                exit(EXIT_FAILURE);
+            }
 
             publisher(nameWorld);
-        }
-        
-
-            
-        // 
-        
+        }        
     }
 
     // Delete windows
