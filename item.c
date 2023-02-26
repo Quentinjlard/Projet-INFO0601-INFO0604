@@ -296,7 +296,8 @@ void place_Exit(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
         mvwprintw(windowLevel, posY-3, posX+1, " ");
         mvwprintw(windowLevel, posY-3, posX+2, " ");
         wrefresh(windowLevel);
-        add_item_fileMap(fd_World ,posX,posY,EXIT);
+        if (MODE == 0)
+            add_item_fileMap(fd_World ,posX,posY,EXIT);
         mvwprintw(windowInformations, 2, 1,"Place start ? OK");
     }
 }
@@ -340,7 +341,8 @@ void place_Door(WINDOW *windowLevel, WINDOW *windowInformations, int door, int f
                 
             }
 
-        add_item_fileMap(fd_World ,posX,posY,doorBin);
+        if (MODE == 0)
+            add_item_fileMap(fd_World ,posX,posY,doorBin);
 
         wattron(windowLevel,COLOR_PAIR(8));
         mvwprintw(windowLevel, posY-3, posX, "%.2d", door);
@@ -415,7 +417,8 @@ void place_Gate(WINDOW *windowLevel, WINDOW *windowInformations,WINDOW *windowTo
     wattron(windowLevel,COLOR_PAIR(color));
     mvwaddch(windowLevel, posY, posX, ACS_PLUS);
     wrefresh(windowLevel);
-    add_item_fileMap(fd_World ,posX,posY,gateB);
+    if (MODE == 0)
+        add_item_fileMap(fd_World ,posX,posY,gateB);
     mvwprintw(windowInformations, 2, 1,"Place Gate ? OK");
     wrefresh(windowInformations);
 }
@@ -469,8 +472,8 @@ void place_Key(WINDOW *windowLevel, WINDOW *windowInformations,WINDOW *windowToo
                 
             }
     }
-
-    add_item_fileMap(fd_World ,posX,posY,keyB);
+    if (MODE == 0)
+        add_item_fileMap(fd_World ,posX,posY,keyB);
     wattron(windowLevel,COLOR_PAIR(colorFD));
     mvwprintw(windowLevel, posY, posX, " ");
     wattron(windowLevel,COLOR_PAIR(color));
@@ -500,7 +503,8 @@ void place_Probe(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
                 posX = posX;
             }
     }
-    add_item_fileMap(fd_World ,posX,posY,PROBE);
+    if (MODE == 0)
+        add_item_fileMap(fd_World ,posX,posY,PROBE);
 
     wattron(windowLevel,COLOR_PAIR(8));
     mvwaddch(windowLevel, posY, posX-1, ACS_LTEE);
@@ -535,8 +539,8 @@ void place_Robot(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
                 posX = posX;
             }
     }
-
-    add_item_fileMap(fd_World ,posX,posY,ROBOT);
+    if (MODE == 0)
+        add_item_fileMap(fd_World ,posX,posY,ROBOT);
 
     wattron(windowLevel,COLOR_PAIR(8));
 

@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include <dirent.h>
+
 #include "functions.h"
 
 #include "publisher.h"
@@ -45,5 +47,9 @@
 #define PROBE   21
 #define ROBOT   22
 
+// Mode = 0 => Editeur
+// Mode = 1 => Game 
+
+int MODE  = 0 ;
 
 #endif

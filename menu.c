@@ -79,6 +79,7 @@ int main()
 
         if(ch == '1')
         {
+            MODE = 0;
             echo();
             curs_set(TRUE);
             mvprintw(25, 6 ," Entering the name of the world : ");
@@ -113,6 +114,59 @@ int main()
             }
 
             publisher(nameWorld);
+        }
+        if(ch == '2')
+        {
+            MODE = 1;
+            echo();
+            curs_set(TRUE);
+            mvprintw(25, 6 ," Enter number of players : ");
+            scanw("%s", nameWorld);
+            mvprintw(26, 6 ,"Vous avez entre : %s\n", nameWorld);
+            noecho();
+            curs_set(FALSE);
+
+            struct dirent *file;
+            // opendir() renvoie un pointeur de type DIR. 
+            DIR *dir = opendir(".");
+            if (!dir) 
+            {
+                printf("Erreur : Impossible d'ouvrir le dossier.\n");
+                return 1;
+            }
+
+            int i = 1;
+            int ligne = 27;
+            if (dir)
+            {
+                while ((file = readdir(dir)) != NULL)
+                {
+                    if (file->d_type == DT_REG && strstr(file->d_name, ".bin") != NULL) 
+                    {
+                        char* filename = strtok(file->d_name, ".");
+                        mvprintw(ligne, 6 ,"[%2d] %s \t",i, filename);
+                        i ++;
+                        ligne ++;
+                    }
+                }
+                closedir(dir);
+            }
+
+            echo();
+            curs_set(TRUE);
+            mvprintw(ligne, 6 ," Entering the name of the world : ");
+            scanw("%s", nameWorld);
+            // mvprintw(26, 6 ,"Vous avez entré : %s\n", nameWorld);
+            noecho();
+            curs_set(FALSE);
+
+            size_t total_len = strlen(nameWorld) + strlen(ext);
+            if (total_len < 100)
+                strncat(nameWorld, ext, 100 - strlen(nameWorld));
+            else
+                mvprintw(27, 6, "Error: insufficient buffer size\n");
+            
+            mvprintw(ligne+1, 6 ,"Vous avez entre : %s \n", nameWorld);
         }        
     }
 
