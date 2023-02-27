@@ -1,14 +1,10 @@
 #
-# MAIN CONFIGURATION
+# MAIN CONFIGURATION (to configure)
 #
 
 EXEC = menu
 OBJECTS = functions.o item.o publisher.o fileMap.o playingField.o
-PROJECT_NAME = Projet_L3
-
-OBJECTS_DIR = obj
-INCLUDE_DIR = includes
-BIN_DIR = bin
+PROJECT_NAME = publisher
 
 #
 # SUFFIXES (must not change it)
@@ -24,7 +20,7 @@ EXEC_O = $(EXEC:=.o)
 OBJECTS_O = $(OBJECTS) $(EXEC_O)
 
 #
-# ARGUMENTS AND COMPILER (to configure)
+# ARGUMENTS AND COMPILER (to configure) -Werror
 #
 
 CC = gcc
@@ -40,7 +36,7 @@ CCLIBS = -lcurses
 all: msg $(OBJECTS) $(EXEC_O)
 	@echo "Create executables..."
 	@for i in $(EXEC); do \
-	$(CC) -o $(BIN_DIR)/$$i $(OBJECTS_DIR)/$$i.o $(OBJECTS_DIR)/$(OBJECTS) $(CCLIBS) -I../$(INCLUDE_DIR)/; \
+	$(CC) -o $$i $$i.o $(OBJECTS) $(CCLIBS); \
 	done
 	@echo "Done."
 
@@ -54,8 +50,8 @@ debug: all
 # DEFAULT RULES (must not change it)
 #
 
-%.o : src/%.c
-	@cd $(dir $<) && ${CC} ${CCFLAGS} -c $(notdir $<) -o ../$(OBJECTS_DIR)/$(notdir $@) -I../$(INCLUDE_DIR)/
+.c.o: .h
+	@cd $(dir $<) && ${CC} ${CCFLAGS} -c $(notdir $<) -o $(notdir $@)
 
 #
 # MAIN RULES (must not change it)
@@ -64,18 +60,18 @@ debug: all
 # You can add your own commands
 clean:
 	@echo "Delete objects, temporary files..."
-	@rm -f $(OBJECTS_DIR)/$(OBJECTS_O) $(OBJECTS_DIR)/$(EXEC_O)
-	@rm -f $(INCLUDE_DIR)/*~ $(INCLUDE_DIR)/*# src/*~ src/*#
-	@rm -f $(BIN_DIR)/$(EXEC)
+	@rm -f $(OBJECTS) $(EXEC_O)
+	@rm -f *~ *#
+	@rm -f $(EXEC)
 	@rm -f dependancies
 	@echo "Done."
 
 depend:
 	@echo "Create dependancies..."
-	@sed -e "/^# DEPENDANCIES/,$$ d" makefile > dependancies
+	@sed -e "/^# DEPENDANCES/,$$ d" makefile > dependancies
 	@echo "# DEPENDANCIES" >> dependancies
-	@for i in $(OBJECTS_O); do \
-	$(CC) -MM -MT src/$$i $(CCFLAGS) src/`echo $$i | sed "s/\(.*\)\\.o$$/\1.c/"` -I$(INCLUDE_DIR)/ >> dependancies; \
+	@for i in $(OBJETS_O); do \
+	$(CC) -MM -MT $$i $(CCFLAGS) `echo $$i | sed "s/\(.*\)\\.o$$/\1.c/"` >> dependancies; \
 	done
 	@cat dependancies > makefile
 	@rm dependancies
@@ -93,5 +89,4 @@ archive: clean
 	@echo "Done."
 
 # DEPENDANCIES
-src/example.o: src/example.c includes/example.h
-src/test.o: src/test.c includes/example.h
+# This section is completed automatically

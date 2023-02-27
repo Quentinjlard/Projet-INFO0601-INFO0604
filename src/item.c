@@ -1,5 +1,6 @@
 #include "item.h"
 
+int MODE = 0;
 /**
  * @brief 
  * 
@@ -106,7 +107,8 @@ void place_block(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
         wattron(windowLevel,COLOR_PAIR(9));
         mvwprintw(windowLevel, posY, posX, " ");
         wrefresh(windowLevel);
-        add_item_fileMap(fd_World ,posX,posY,BLOCK);
+        if( MODE == 0)
+            add_item_fileMap(fd_World ,posX,posY,BLOCK);
         mvwprintw(windowInformations, 2, 1,"Place Block ? OK");
     }
 }
@@ -133,7 +135,8 @@ void place_Trap(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
         wattron(windowLevel,COLOR_PAIR(9));
         mvwprintw(windowLevel, posY, posX, "#");
         wrefresh(windowLevel);
-        add_item_fileMap(fd_World ,posX,posY,TRAP);
+        if(MODE == 0 )
+            add_item_fileMap(fd_World ,posX,posY,TRAP);
         mvwprintw(windowInformations, 2, 1,"Place Trap ? OK");
     }
 }
@@ -160,7 +163,8 @@ void place_Life(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
         wattron(windowLevel,COLOR_PAIR(2));
         mvwprintw(windowLevel, posY, posX, "V");
         wrefresh(windowLevel);
-        add_item_fileMap(fd_World ,posX,posY,LIFE);
+        if(MODE == 0 )
+            add_item_fileMap(fd_World ,posX,posY,LIFE);
         mvwprintw(windowInformations, 2, 1,"Place Life ? OK");
     }
 }
@@ -186,7 +190,8 @@ void place_bomb(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
         wattron(windowLevel,COLOR_PAIR(8));
         mvwprintw(windowLevel, posY, posX, "o");
         wrefresh(windowLevel);
-        add_item_fileMap(fd_World ,posX,posY,BOMBE);
+        if(MODE == 0 )
+            add_item_fileMap(fd_World ,posX,posY,BOMBE);
         mvwprintw(windowInformations, 2, 1,"Place Life ? OK");
     }
 }

@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "*.rmd": "markdown",
+        "ostream": "cpp",
+        "new": "cpp",
+        "stdio.h": "c",
+        "fcntl.h": "c",
+        "errno.h": "c",
+        "playingfield.h": "c"
+    }
+}

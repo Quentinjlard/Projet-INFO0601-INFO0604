@@ -10,7 +10,6 @@
  */
 #include "includeAll.h"
 
-
 int main()
 {
     // Variable Arena
@@ -79,7 +78,7 @@ int main()
 
         if(ch == '1')
         {
-            MODE = 0;
+            // MODE = 0;
             echo();
             curs_set(TRUE);
             mvprintw(25, 6 ," Entering the name of the world : ");
@@ -117,7 +116,7 @@ int main()
         }
         if(ch == '2')
         {
-            MODE = 1;
+            // MODE = 1;
             echo();
             curs_set(TRUE);
             mvprintw(25, 6 ," Enter number of players : ");
@@ -167,6 +166,8 @@ int main()
                 mvprintw(27, 6, "Error: insufficient buffer size\n");
             
             mvprintw(ligne+1, 6 ,"Vous avez entre : %s \n", nameWorld);
+
+            playingField();
         }        
     }
 

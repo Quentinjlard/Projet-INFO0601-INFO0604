@@ -1,5 +1,5 @@
 #ifndef __IncludeH_H__
-# define __IncludeH_H__
+#define __IncludeH_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +19,8 @@
 #include "item.h"
 
 #include "fileMap.h"
+
+#include "playingField.h"
 
 #define HEIGHT 22
 #define WIDTH  62
@@ -50,6 +52,6 @@
 // Mode = 0 => Editeur
 // Mode = 1 => Game 
 
-int MODE  = 0 ;
+// int MODE = 0;
 
 #endif
