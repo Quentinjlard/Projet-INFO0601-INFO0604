@@ -3,7 +3,7 @@
 #
 
 EXEC = menu
-OBJECTS = functions.o item.o publisher.o fileMap.o playingField.o
+OBJECTS = functions.o item.o publisher.o fileMap.o playingField.o menu.o
 PROJECT_NAME = Projet_L3
 
 OBJECTS_DIR = obj
@@ -93,5 +93,24 @@ archive: clean
 	@echo "Done."
 
 # DEPENDANCIES
-src/example.o: src/example.c includes/example.h
-src/test.o: src/test.c includes/example.h
+src/functions.o: src/functions.c includes/functions.h \
+ includes/includeAll.h includes/functions.h includes/publisher.h \
+ includes/item.h includes/fileMap.h includes/playingField.h
+src/item.o: src/item.c includes/item.h includes/includeAll.h \
+ includes/functions.h includes/publisher.h includes/item.h \
+ includes/fileMap.h includes/playingField.h
+src/publisher.o: src/publisher.c includes/publisher.h \
+ includes/includeAll.h includes/functions.h includes/publisher.h \
+ includes/item.h includes/fileMap.h includes/playingField.h
+src/fileMap.o: src/fileMap.c includes/fileMap.h includes/includeAll.h \
+ includes/functions.h includes/publisher.h includes/item.h \
+ includes/fileMap.h includes/playingField.h
+src/playingField.o: src/playingField.c includes/playingField.h \
+ includes/includeAll.h includes/functions.h includes/publisher.h \
+ includes/item.h includes/fileMap.h includes/playingField.h
+src/menu.o: src/menu.c includes/includeAll.h includes/functions.h \
+ includes/includeAll.h includes/publisher.h includes/item.h \
+ includes/fileMap.h includes/playingField.h
+src/menu.o: src/menu.c includes/includeAll.h includes/functions.h \
+ includes/includeAll.h includes/publisher.h includes/item.h \
+ includes/fileMap.h includes/playingField.h
