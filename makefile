@@ -3,9 +3,10 @@
 #
 
 EXEC = menu
-OBJECTS = functions.o item.o publisher.o fileMap.o playingField.o menu.o
-PROJECT_NAME = Projet_L3
+OBJECTS = functions.o item.o publisher.o fileMap.o playingField.o
+PROJECT_NAME = menu
 
+SRC_DIR = src
 OBJECTS_DIR = obj
 INCLUDE_DIR = includes
 BIN_DIR = bin
@@ -28,19 +29,19 @@ OBJECTS_O = $(OBJECTS) $(EXEC_O)
 #
 
 CC = gcc
-CCFLAGS_STD = -Wall -O3 
+CCFLAGS_STD = -Wall -O3 -Werror
 CCFLAGS_DEBUG = -D _DEBUG_
 CCFLAGS = $(CCFLAGS_STD)
-CCLIBS = -lcurses
+CCLIBS = 
 
 #
 # RULES (must not change it)
 #
 
-all: msg $(OBJECTS) $(EXEC_O)
+all: msg $(addprefix $(OBJECTS_DIR)/,$(OBJECTS)) $(addprefix $(OBJECTS_DIR)/,$(EXEC_O))
 	@echo "Create executables..."
 	@for i in $(EXEC); do \
-	$(CC) -o $(BIN_DIR)/$$i $(OBJECTS_DIR)/$$i.o $(OBJECTS_DIR)/$(OBJECTS) $(CCLIBS) -I../$(INCLUDE_DIR)/; \
+	$(CC) -o $(addprefix $(BIN_DIR)/,$$i) $(addprefix $(OBJECTS_DIR)/,$$i.o) $(addprefix $(OBJECTS_DIR)/,$(OBJECTS)) $(CCLIBS) -I../$(INCLUDE_DIR)/; \
 	done
 	@echo "Done."
 
@@ -54,8 +55,8 @@ debug: all
 # DEFAULT RULES (must not change it)
 #
 
-%.o : src/%.c
-	@cd $(dir $<) && ${CC} ${CCFLAGS} -c $(notdir $<) -o ../$(OBJECTS_DIR)/$(notdir $@) -I../$(INCLUDE_DIR)/
+$(addprefix obj/,%.o) : $(addprefix src/,%.c)
+	@${CC} ${CCFLAGS} -c $< -o $@ -I$(INCLUDE_DIR)/
 
 #
 # MAIN RULES (must not change it)
@@ -64,9 +65,11 @@ debug: all
 # You can add your own commands
 clean:
 	@echo "Delete objects, temporary files..."
-	@rm -f $(OBJECTS_DIR)/$(OBJECTS_O) $(OBJECTS_DIR)/$(EXEC_O)
-	@rm -f $(INCLUDE_DIR)/*~ $(INCLUDE_DIR)/*# src/*~ src/*#
-	@rm -f $(BIN_DIR)/$(EXEC)
+	@rm -f $(addprefix $(OBJECTS_DIR)/,$(OBJECTS_O))
+	@rm -f $(addprefix $(OBJECTS_DIR)/,$(EXEC_O))
+	@rm -f $(addprefix $(OBJECTS_DIR)/,*~) $(addprefix $(OBJECTS_DIR)/,*#)
+	@rm -f $(addprefix $(INCLUDE_DIR)/,*~) $(addprefix $(INCLUDE_DIR)/,*#)
+	@rm -f $(addprefix $(BIN_DIR)/,$(EXEC))
 	@rm -f dependancies
 	@echo "Done."
 
@@ -75,7 +78,7 @@ depend:
 	@sed -e "/^# DEPENDANCIES/,$$ d" makefile > dependancies
 	@echo "# DEPENDANCIES" >> dependancies
 	@for i in $(OBJECTS_O); do \
-	$(CC) -MM -MT src/$$i $(CCFLAGS) src/`echo $$i | sed "s/\(.*\)\\.o$$/\1.c/"` -I$(INCLUDE_DIR)/ >> dependancies; \
+	$(CC) -MM -MT $(addprefix $(OBJECTS_DIR)/,$$i) $(CCFLAGS) $(SRC_DIR)/`echo $$i | sed "s/\(.*\)\\.o$$/\1.c/"` -I$(INCLUDE_DIR) >> dependancies; \
 	done
 	@cat dependancies > makefile
 	@rm dependancies
@@ -93,24 +96,5 @@ archive: clean
 	@echo "Done."
 
 # DEPENDANCIES
-src/functions.o: src/functions.c includes/functions.h \
- includes/includeAll.h includes/functions.h includes/publisher.h \
- includes/item.h includes/fileMap.h includes/playingField.h
-src/item.o: src/item.c includes/item.h includes/includeAll.h \
- includes/functions.h includes/publisher.h includes/item.h \
- includes/fileMap.h includes/playingField.h
-src/publisher.o: src/publisher.c includes/publisher.h \
- includes/includeAll.h includes/functions.h includes/publisher.h \
- includes/item.h includes/fileMap.h includes/playingField.h
-src/fileMap.o: src/fileMap.c includes/fileMap.h includes/includeAll.h \
- includes/functions.h includes/publisher.h includes/item.h \
- includes/fileMap.h includes/playingField.h
-src/playingField.o: src/playingField.c includes/playingField.h \
- includes/includeAll.h includes/functions.h includes/publisher.h \
- includes/item.h includes/fileMap.h includes/playingField.h
-src/menu.o: src/menu.c includes/includeAll.h includes/functions.h \
- includes/includeAll.h includes/publisher.h includes/item.h \
- includes/fileMap.h includes/playingField.h
-src/menu.o: src/menu.c includes/includeAll.h includes/functions.h \
- includes/includeAll.h includes/publisher.h includes/item.h \
- includes/fileMap.h includes/playingField.h
+obj/example.o: src/example.c includes/example.h
+obj/test.o: src/test.c includes/example.h

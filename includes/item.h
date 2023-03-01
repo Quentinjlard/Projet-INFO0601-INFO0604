@@ -14,6 +14,14 @@ void init_Level(WINDOW*, WINDOW*);
 /**
  * @brief 
  * 
+ * @param windowLevel 
+ * @param windowInformations 
+ */
+void init_PlayInformations(WINDOW*, char);
+
+/**
+ * @brief 
+ * 
  * @param windowTools 
  * @param level 
  * @param door 

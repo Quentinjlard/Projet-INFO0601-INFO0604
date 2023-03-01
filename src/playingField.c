@@ -16,6 +16,8 @@ void playingField()
     // Variable arena
     int ch;
     WINDOW *window, *windowLevel, *windowPlayerInformation, *windowInformations;
+    //int door = 01, life=00, bomb = 00, fd_World;
+    char level = 01;
 
     // NCurses intialization
     // NCURSES Initialization
@@ -50,7 +52,7 @@ void playingField()
 
     init_Level(windowLevel,windowInformations);
     
-    // init_PlayInformations();
+    init_PlayInformations(windowPlayerInformation, level);
 
     wrefresh(window);
     wrefresh(windowLevel);

@@ -52,6 +52,6 @@
 // Mode = 0 => Editeur
 // Mode = 1 => Game 
 
-// int MODE = 0;
+int MODE;
 
 #endif

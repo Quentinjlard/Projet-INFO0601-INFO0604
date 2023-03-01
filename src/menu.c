@@ -78,7 +78,7 @@ int main()
 
         if(ch == '1')
         {
-            // MODE = 0;
+            MODE = 0;
             echo();
             curs_set(TRUE);
             mvprintw(25, 6 ," Entering the name of the world : ");
@@ -116,7 +116,7 @@ int main()
         }
         if(ch == '2')
         {
-            // MODE = 1;
+            MODE = 1;
             echo();
             curs_set(TRUE);
             mvprintw(25, 6 ," Enter number of players : ");

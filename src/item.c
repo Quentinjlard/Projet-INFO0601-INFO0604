@@ -570,3 +570,40 @@ void place_Robot(WINDOW *windowLevel, WINDOW *windowInformations, int fd_World)
     wrefresh(windowInformations);
 }
 
+void init_PlayInformations(WINDOW* windowPlayerInformation, char level)
+{
+    int posX = 0;
+    wattron(windowPlayerInformation,COLOR_PAIR(8));
+    mvwprintw(windowPlayerInformation, 1, 1, "Keys");
+
+    posX = 1;
+
+    for(int i=0; i < 4; i++)
+    {
+        wattron(windowPlayerInformation,COLOR_PAIR(14));
+        mvwprintw(windowPlayerInformation, 3, posX, " ");
+        wattron(windowPlayerInformation,COLOR_PAIR(2));
+        mvwaddch(windowPlayerInformation, 4, posX, ACS_LLCORNER);
+        posX += 2;
+    }
+    
+    wattron(windowPlayerInformation,COLOR_PAIR(8));
+    mvwprintw(windowPlayerInformation, 6, 1, "Keys");
+
+    posX = 2;
+    for (int i = 0; i < 8; i++) {
+        mvwprintw(windowPlayerInformation, 8, posX, "V");
+        posX += 1;
+    }
+
+    mvwprintw(windowPlayerInformation, 10, 1, "Bombs");
+    posX = 3;
+    for (int i = 0; i < 3; i++) {
+        mvwprintw(windowPlayerInformation, 12, posX, "o");
+        posX += 1;
+    }
+
+    mvwprintw(windowPlayerInformation, 14, 1, "Level");
+    mvwprintw(windowPlayerInformation, 16, 3, "%2d", level);
+
+}
