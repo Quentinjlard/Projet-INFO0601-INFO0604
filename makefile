@@ -32,7 +32,7 @@ CC = gcc
 CCFLAGS_STD = -Wall -O3 -Werror
 CCFLAGS_DEBUG = -D _DEBUG_
 CCFLAGS = $(CCFLAGS_STD)
-CCLIBS = 
+CCLIBS = -lcurses
 
 #
 # RULES (must not change it)
