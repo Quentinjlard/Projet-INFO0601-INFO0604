@@ -30,7 +30,7 @@ int mouse_getpos(int *x, int *y);
 
 /**
  * @brief Function to declare the different colours in the palette.
- * 
+ *
  */
 void palette();
 
