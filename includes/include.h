@@ -6,6 +6,7 @@
 
 // Port
 #define PORT 1234
+#define PORT2 1235
 
 // Request
 typedef struct

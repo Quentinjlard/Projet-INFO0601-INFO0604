@@ -4,10 +4,10 @@
 #include "includeAll.h"
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  */
 
-void playingField();
+void playingField(char *);
 
 #endif
