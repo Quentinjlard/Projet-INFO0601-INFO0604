@@ -1,3 +1,14 @@
+/**
+ * @file level.c
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #include <stdio.h>
 #include <wchar.h>
 #include <stdlib.h>
@@ -9,195 +20,222 @@
 #include "level.h"
 #include "tableAdressage.h"
 
-level_t loadLevel(int numNiv, TableAdressage_s * tableAdressage) {
+// Chargement d'un niveau
+level_t loadLevel(int numNiv, tableAdressage_t *tableAdressage, char *nomNiv)
+{
     level_t level;
     off_t adr = tableAdressage->adresse[numNiv];
-    int fd = open("file.bin", O_RDONLY);
+    int fd = open(nomNiv, O_RDONLY);
+    int verif = 1;
+    if (tableAdressage->adresse[numNiv] == 0)
+    {
+        init_matLevel(&level);
+        verif = 0;
+    }
     lseek(fd, adr, SEEK_SET);
-    if (fd == -1) {
-        perror("Erreur d'ouverture du fichier");
+    if (fd == -1)
+    {
+        perror("Erreur d'ouverture du fichier (level)");
         exit(EXIT_FAILURE);
     }
-
-    if (read(fd, &level, sizeof(level_t)) != sizeof(level_t)) {
-        perror("Erreur de lecture du fichier ");
-        exit(EXIT_FAILURE);
+    if (verif == 1)
+    {
+        if (read(fd, &level, sizeof(level_t)) != sizeof(level_t))
+        {
+            perror("Erreur de lecture du fichier (level)");
+            exit(EXIT_FAILURE);
+        }
     }
-    
 
     close(fd);
-    return  level;
+    return level;
 }
 
-void level_display(level_t *level) {
+// Nettoie la fenêtre de niveau
+void clear_windowLevel(WINDOW *windowLevel)
+{
+    for (int i = 0; i < nbCols; i++)
+    {
+        for (int j = 0; j < nblignes; j++)
+        {
+            wattron(windowLevel, COLOR_PAIR(1));
+            mvwprintw(windowLevel, j + 1, i + 1, " ");
+        }
+    }
+    wrefresh(windowLevel);
+}
+
+// Affichage d'un niveau
+void level_display(WINDOW *windowLevel, level_t level)
+{
+    clear_windowLevel(windowLevel);
     int i, j;
-    
-    for(i = 0; i < WIDTH + 2; i++)
-        printf("*");
-    printf("\n");
-    
-    for(i = 0; i < HEIGHT; i++) {
-        printf("*");
-        for(j = 0; j < WIDTH; j++) {
-            printf("\x1b[%dm%C\x1b[0m", level->colors[i][j], level->cells[i][j]);
-        }
-        printf("*\n");
-    }
-    
-    for(i = 0; i < WIDTH + 2; i++)
-        printf("*");
-    printf("\n");
-}
-
-// Fonction pour trouver un emplacement libre dans le fichier
-off_t rechercheEspaceVide(int fd, TableVide_s *tableVide) {
-    for (int i = 0; i < N; i++) {
-        if (tableVide->taille[i] >= sizeof(level_t)){
-            off_t val = tableVide->debut[i];
-            supprimer_table_vide(tableVide, i);
-            return val;
+    for (i = 0; i < nbCols; i++)
+    {
+        for (j = 0; j < nblignes; j++)
+        {
+            wattron(windowLevel, COLOR_PAIR(level.colors[i * nblignes + j]));
+            mvwaddch(windowLevel, j + 1, i + 1, level.cells[i * nblignes + j]);
         }
     }
-    return lseek(fd, 0, SEEK_END);
-    
+    wrefresh(windowLevel);
 }
 
-int ajouterLevel(level_t * level, TableAdressage_s * tableAdresse, TableVide_s * tableVide) {
+// Trouver emplacement vide dans le niveau
+off_t rechercheEspaceVide(int fd, tableAdressage_t *tableAdresse)
+{
+    int i = 0;
+    if (tableAdresse->adresse[0] == 0)
+    {
+        return lseek(fd, 9600, SEEK_SET);
+    }
+    while (i < N - 1 && tableAdresse->adresse[i] != 0)
+    {
+        i++;
+    }
+
+    if (i >= N - 1 && tableAdresse->adresse[i] != 0)
+    {
+        perror("Table adressage pleine");
+        exit(EXIT_FAILURE);
+    }
+
+    return lseek(fd, tableAdresse->adresse[i - 1] + 9600, SEEK_SET);
+}
+
+// Ajouter un niveau dans le fichier
+int ajouterLevel(level_t *level, tableAdressage_t *tableAdresse, char *nomNiv)
+{
     int err;
 
-    int fd = open("file.bin", O_RDWR);
+    int fd = open(nomNiv, O_RDWR);
     // Lecture de la table d'adresses
     lseek(fd, 0, SEEK_SET);
-    if((err=read(fd, tableAdresse, sizeof(TableAdressage_s)))==-1)
+    if ((err = read(fd, tableAdresse, sizeof(tableAdressage_t))) == -1)
     {
-        perror("File read error");
+        perror("Erreur lecture table d'adressage (level)");
         exit(EXIT_FAILURE);
     };
-    
-    // Lecture de la table de vide
-    lseek(fd, sizeof(TableAdressage_s), SEEK_SET);
-    if((err=read(fd, tableVide, sizeof(TableVide_s)))==-1)
-    {
-        perror("File read error");
-        exit(EXIT_FAILURE);
-    };
-    
-
+    lseek(fd, sizeof(tableAdressage_t), SEEK_SET);
 
     // Trouver un emplacement libre dans le fichier
 
-    off_t adresse = rechercheEspaceVide(fd, tableVide);
+    off_t adresse = rechercheEspaceVide(fd, tableAdresse);
 
     // Écrire la chaîne de caractères à l'emplacement trouvé
     lseek(fd, adresse, SEEK_SET);
-    level_display(level);
-    if((err=write(fd, level, sizeof(level_t)))==-1)
+    printf("%ld", adresse);
+
+    if ((err = write(fd, level, sizeof(level_t))) == -1)
     {
-        perror("File read error");
+        perror("Erreur écriture level (level)");
         exit(EXIT_FAILURE);
     };
 
     // Ajouter l'adresse du niveau à la table d'adresses
-    int i=0;
-    while(tableAdresse->adresse[i] != 0){
+    int i = 0;
+    while (tableAdresse->adresse[i] != 0)
+    {
         i++;
     }
     tableAdresse->adresse[i] = adresse;
-   
 
-    // Mettre à jour la table d'adresses et la table de vide dans le fichier
+    // Mettre à jour la table d'adresses dans le fichier
     lseek(fd, 0, SEEK_SET);
-    if((err=write(fd, tableAdresse, sizeof(TableAdressage_s)))==-1)
+    if ((err = write(fd, tableAdresse, sizeof(tableAdressage_t))) == -1)
     {
-        perror("File read error");
+        perror("Erreur écriture table d'adressage (level)");
         exit(EXIT_FAILURE);
     };
-    lseek(fd, sizeof(TableAdressage_s), SEEK_SET);
+    lseek(fd, sizeof(tableAdressage_t), SEEK_SET);
 
-    if((err=write(fd, tableVide, sizeof(TableVide_s)))==-1)
+    // Fermer descripteur de fichier
+    if ((err = close(fd)) == -1)
     {
-        perror("File read error");
-        exit(EXIT_FAILURE);
-    };
-
-    if((err=close(fd))==-1)
-    {
-        perror("File read error");
+        perror("Erreur fermeture descripteur de fichier (level)");
         exit(EXIT_FAILURE);
     };
 
     return 0;
 }
 
-int supprimerLevel(TableAdressage_s * tableAdresse, TableVide_s * tableVide, int niv) {
+// Initialiser niveau
+void init_matLevel(level_t *level)
+{
+    for (int i = 0; i < nblignes * nbCols; i++)
+    {
+        level->cells[i] = ' ';
+        level->colors[i] = 1;
+    }
+    for (int i = 0; i < nblignes; i++)
+    {
+        for (int j = 0; j < nbCols; j++)
+        {
+            if (i == 0 || i == nblignes - 1 || j == 0 || j == nbCols - 1)
+            {
+                level->cells[i * nbCols + j] = ' ';
+                level->colors[i * nbCols + j] = 9;
+            }
+        }
+    }
+}
 
-    int fd = open("file.bin", O_RDWR);
-    int err;
+// Supprimer niveau
+int supprimerLevel(tableAdressage_t *tableAdresse, int niv, char *nomNiv)
+{
+    int err, fd = 0;
+    if ((fd = open(nomNiv, O_RDWR)) == -1)
+    {
+        perror("Erreur ouverture fichier (level)");
+        exit(EXIT_FAILURE);
+    }
 
     // Lecture de la table d'adresses
     lseek(fd, 0, SEEK_SET);
-    if((err=read(fd, tableAdresse, sizeof(TableAdressage_s)))==-1)
+    if ((err = read(fd, tableAdresse, sizeof(tableAdressage_t))) == -1)
     {
-        perror("File read error");
-        exit(EXIT_FAILURE);
-    };
-
-    // Lecture de la table de vide
-    lseek(fd, sizeof(TableAdressage_s), SEEK_SET);
-    if((err=read(fd, tableVide, sizeof(TableVide_s)))==-1)
-    {
-        perror("File read error");
+        perror("Erreur lecture fichier (level)");
         exit(EXIT_FAILURE);
     };
 
     // Vérifier que l'index est valide
-    int index =niv;
-    if (index < 0 || index >= N || tableAdresse->adresse[index] == 0) {
+    int index = niv;
+    if (index < 0 || index >= N || tableAdresse->adresse[index] == 0)
+    {
         printf("Entrée non valide\n");
         return 1;
     }
 
     // Supprimer l'entrée de la table d'adresses
-    off_t adresse = tableAdresse->adresse[index];
     tableAdresse->adresse[index] = 0;
-
-    // Ajouter un trou à la table de vide
-    for (int i = 0; i < N; i++) {
-        if (tableVide->taille[i] == 0) {
-            level_t* buffer = (level_t*) malloc(sizeof(level_t));
-            lseek(fd, adresse, SEEK_SET);
-            if((err=read(fd, buffer, sizeof(level_t)))==-1)
-            {
-                perror("File read error");
-                exit(EXIT_FAILURE);
-            };
-            tableVide->debut[i] = adresse;
-            tableVide->taille[i] = sizeof(level_t);
-            break;
-        }
-    }
 
     // Mettre à jour la table d'adresses et la table de vide dans le fichier
     lseek(fd, 0, SEEK_SET);
-    if((err=write(fd, tableAdresse, sizeof(TableAdressage_s)))==-1)
+    if ((err = write(fd, tableAdresse, sizeof(tableAdressage_t))) == -1)
     {
-        perror("File write error");
+        perror("Erreur écriture table adressage (level)");
         exit(EXIT_FAILURE);
     };
-    lseek(fd, sizeof(TableAdressage_s), SEEK_SET);
-    if((err=write(fd, tableVide, sizeof(TableVide_s)))==-1)
+    lseek(fd, sizeof(tableAdressage_t), SEEK_SET);
+
+    if ((err = close(fd)) == -1)
     {
-        perror("File write error");
+        perror("Erreur fermeture descripteur de fichier (level)");
         exit(EXIT_FAILURE);
     };
 
-    if((err=close(fd))==-1)
-    {
-        perror("Close error");
-        exit(EXIT_FAILURE);
-    };
-    
     return 0;
 }
 
-   
+// Afficher fenêtre de debug
+void afficherDEBUG(level_t level, WINDOW *wDEBUG)
+{
+    for (int i = 0; i < nbCols; i++)
+    {
+        for (int j = 0; j < nblignes; j++)
+        {
+            mvwaddch(wDEBUG, j + 1, i + 1, level.cells[i * nblignes + j]);
+        }
+    }
+    wrefresh(wDEBUG);
+}

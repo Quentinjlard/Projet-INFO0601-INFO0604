@@ -1,32 +1,39 @@
-
-
+/**
+ * @file tableAdressage.c
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #include "tableAdressage.h"
 
 #define N 20
 
-TableAdressage_s *creation_table()
+// Création table d'adressage
+void creation_table(tableAdressage_t *table)
 {
-    TableAdressage_s *table = (TableAdressage_s *)malloc(sizeof(TableAdressage_s));
+    table = (tableAdressage_t *)malloc(sizeof(tableAdressage_t));
     memset(table->adresse, 0, sizeof(table->adresse));
-    return table;
 }
 
-void ajout_table_adressage(TableAdressage_s *table, off_t addresse, int index)
-{
-    table->adresse[index] = addresse;
-}
-
-void supprimer_table_adressage(TableAdressage_s *table, int index)
+// Supprimer table d'adressage
+void supprimer_table_adressage(tableAdressage_t *table, int index)
 {
     table->adresse[index] = 0;
 }
 
-off_t lire_table_adressage(TableAdressage_s *table, int index)
+// Lecture table d'adressage'
+off_t lire_table_adressage(tableAdressage_t *table, int index)
 {
     return table->adresse[index];
 }
 
-void affichage_table_adressage(TableAdressage_s *table)
+// Affichage table d'adressage
+void affichage_table_adressage(tableAdressage_t *table)
 {
     for (int i = 0; i < N; i++)
     {

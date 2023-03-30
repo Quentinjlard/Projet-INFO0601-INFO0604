@@ -1,3 +1,14 @@
+/**
+ * @file serveur.c
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -9,6 +20,7 @@
 
 #include "include.h"
 
+// Fonctions utilisés par les processus fils pour gérer les parties
 void fils(int nbJ)
 {
 
@@ -216,37 +228,36 @@ int main(int argc, char *argv[])
                 /**
                  * Initialisation connexion TCP
                  */
-                // Create socket
+
+                // Création socket TCP
                 if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
                 {
-                    perror("Error creating socket");
+                    perror("Erreur lors de la création de la socket TCP");
                     exit(EXIT_FAILURE);
                 }
 
-                // Fill server address
+                // Remplissage de l'adresse TCP
                 memset(&address, 0, sizeof(struct sockaddr_in));
                 address.sin_family = AF_INET;
                 address.sin_addr.s_addr = htonl(INADDR_ANY);
                 address.sin_port = htons(PORT2);
 
-                // Name socket
+                // Nommage socket
                 if (bind(fd, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) == -1)
                 {
-                    perror("Error naming socket");
+                    perror("Erreur lors du nommage de la socket TCP");
                     exit(EXIT_FAILURE);
                 }
 
-                // Switch the socket in passive mode
+                // Passe la socket en mode passive
                 if (listen(fd, 1) == -1)
                 {
-                    perror("Error switching socket in passive mode");
+                    perror("Erreur lors du passage de la socket TCP en passive");
                     exit(EXIT_FAILURE);
                 }
 
                 // Envoi du numéro de port TCP
-
                 sprintf(portTCP, "%d", PORT2);
-
                 strcpy(response.msg, portTCP);
                 if (sendto(sockfd, &response, sizeof(response), 0, (struct sockaddr *)&client_address, sizeof(struct sockaddr_in)) == -1)
                 {
@@ -255,13 +266,13 @@ int main(int argc, char *argv[])
                 }
                 printf("Serveur: envoi numéro de port TCP.\n");
 
-                // Wait for a connexion
-                printf("Server: Attente d'une connexion client\n");
+                // En attente d'une connexion
+                printf("Serveur: Attente d'une connexion client\n");
                 if ((sockclient = accept(fd, NULL, NULL)) == -1)
                 {
                     if (errno != EINTR)
                     {
-                        perror("Error waiting connexion");
+                        perror("Erreur lors de l'attente d'une connexion");
                         exit(EXIT_FAILURE);
                     }
                 }

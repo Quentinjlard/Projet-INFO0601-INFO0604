@@ -1,28 +1,18 @@
-#ifndef __IncludeH_H__
-#define __IncludeH_H__
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ncurses.h>
-#include <locale.h>
-#include <errno.h>
-#include <unistd.h>
-#include <fcntl.h>
-
-#include <dirent.h>
-
-#include "functions.h"
+/**
+ * @file includeAll.h
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+#ifndef __IncludeAll_H__
+#define __IncludeAll_H__
 
 #include "include.h"
-
-#include "publisher.h"
-
-#include "item.h"
-
-#include "fileMap.h"
-
-#include "playingField.h"
 
 #define HEIGHT 22
 #define WIDTH 62
@@ -50,10 +40,5 @@
 #define DOOR5 20
 #define PROBE 21
 #define ROBOT 22
-
-// Mode = 0 => Editeur
-// Mode = 1 => Game
-
-// int MODE;
 
 #endif

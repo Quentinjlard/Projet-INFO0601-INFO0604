@@ -10,44 +10,55 @@
  *
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ncurses.h>
+#include <locale.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+
 #include "playingField.h"
+#include "item.h"
+#include "functions.h"
 
 void playingField(char *filename)
 {
-    // Variable arena
+    // Variables
     int ch;
     char nomLevel[256];
-    int posY, posX;
+    // int posY, posX;
+
     strcpy(nomLevel, filename);
     WINDOW *window, *windowLevel, *windowPlayerInformation, *windowInformations;
     // int door = 01, life=00, bomb = 00, fd_World;
     char level = 01;
 
-    // NCurses intialization
+    // Initialisation d'ncurses
     setlocale(LC_ALL, "");
     ncurses_init();
     ncurses_init_mouse();
     ncurses_colors();
     palette();
 
-    // newwin(Size Y , Size X, Position Y, Position X)
-    // Create the main window with a box
+    // Création fenêtre principale
     window = newwin(29, 78, 0, 0);
 
-    // subwin(WINDOW window,Size Y , Size X, Position Y, Position X)
-    // Create the windowLevel
+    // Création fenêtre de jeu
     windowLevel = newwin(22, 62, 0, 0);
     scrollok(windowLevel, TRUE);
     box(windowLevel, 0, 0);
     mvwprintw(windowLevel, 0, 0, "Level");
 
-    // Create the windowPlayerInformation
+    // Création fenêtre d'information de jeu
     windowPlayerInformation = newwin(22, 15, 0, 63);
     scrollok(windowPlayerInformation, TRUE);
     box(windowPlayerInformation, 0, 0);
     // mvwprintw(windowPlayerInformation, 0, 0, "Information");
 
-    // Create the windowInformations
+    // Création fenêtre de message d'information
     windowInformations = newwin(5, 77, 23, 0);
     scrollok(windowInformations, TRUE);
     box(windowInformations, 0, 0);
@@ -71,7 +82,7 @@ void playingField(char *filename)
     {
         for (int j = 2; j < 20; j++)
         {
-            if (mvwinch(windowLevel, j, i) ==)
+            // if (mvwinch(windowLevel, j, i) ==)
         }
     }
 
@@ -94,7 +105,7 @@ void playingField(char *filename)
         }
     }
 
-    // Delete windows
+    // Supprimer fenêtres
     delwin(window);
     delwin(windowLevel);
     delwin(windowPlayerInformation);

@@ -1,3 +1,14 @@
+/**
+ * @file include.h
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #ifndef _INCLUDE_
 #define _INCLUDE_
 
@@ -6,7 +17,7 @@
 
 // Port
 #define PORT 1234
-#define PORT2 1235
+#define PORT2 0
 
 // Request
 typedef struct

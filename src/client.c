@@ -1,3 +1,14 @@
+/**
+ * @file client.c
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -5,8 +16,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include "playingField.h"
 #include "include.h"
-#include "includeAll.h"
 
 /**
  *  Se connecter au serveur, par défaut :
@@ -35,7 +46,7 @@ void client()
     // Création socket
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
     {
-        perror("Error creating socket");
+        perror("Erreur création de la socket UDP");
         exit(EXIT_FAILURE);
     }
 
@@ -196,27 +207,27 @@ void client()
     /**
      * Initialisation Connexion TCP
      */
-    // Create socket
+    // Création socket TCP
     if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
     {
-        perror("Error creating socket");
+        perror("Erreur lors de la création de la socket TCP");
         exit(EXIT_FAILURE);
     }
 
-    // Fill the address structure
+    // Remplissage adresse TCP
     memset(&addressTCP, 0, sizeof(struct sockaddr_in));
     addressTCP.sin_family = AF_INET;
     addressTCP.sin_port = htons(portTCP);
     if (inet_pton(AF_INET, adresseServeur, &addressTCP.sin_addr.s_addr) != 1)
     {
-        perror("Error converting address");
+        perror("Erreur du remplissage de l'adresse TCP");
         exit(EXIT_FAILURE);
     }
 
-    // Connect to the server
+    // Connexion au serveur
     if (connect(fd, (struct sockaddr *)&addressTCP, sizeof(addressTCP)) == -1)
     {
-        perror("Error connecting to the server");
+        perror("Erreur lors de la connexion au serveur");
         exit(EXIT_FAILURE);
     }
 

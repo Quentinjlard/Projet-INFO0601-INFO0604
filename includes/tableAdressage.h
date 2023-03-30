@@ -1,56 +1,35 @@
-
-
+/**
+ * @file tableAdressage.h
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #ifndef __TableAdressage_H__
 #define __TableAdressage_H__
-#include <stdio.h>
+
+#include "includeAll.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdio.h>
 #define N 20
 
-typedef struct TableAdressage_struct
+// Structure d'une table d'adressage
+typedef struct
 {
     off_t adresse[N];
-} TableAdressage_s;
+} tableAdressage_t;
 
-/**
- * @brief
- *
- * @return TableAdressage_s*
- */
-TableAdressage_s *creation_table();
+void creation_table(tableAdressage_t *);
 
-/**
- * @brief
- *
- * @param table
- * @param addresse
- * @param index
- */
-void ajout_table_adressage(TableAdressage_s *table, off_t addresse, int index);
+void supprimer_table_adressage(tableAdressage_t *table, int index);
 
-/**
- * @brief
- *
- * @param table
- * @param index
- */
-void supprimer_table_adressage(TableAdressage_s *table, int index);
+off_t lire_table_adressage(tableAdressage_t *table, int index);
 
-/**
- * @brief
- *
- * @param table
- * @param index
- * @return off_t
- */
-off_t lire_table_adressage(TableAdressage_s *table, int index);
-
-/**
- * @brief
- *
- * @param table
- */
-void affichage_table_adressage(TableAdressage_s *table);
+void affichage_table_adressage(tableAdressage_t *table);
 
 #endif

@@ -1,20 +1,41 @@
+/**
+ * @file functions.c
+ * @author JUILLIARD Quentin (quentin.juilliard@etudiant.univ-reims.fr)
+ * @author COGNE Romain (romain.cogne@etudiant.univ-reims.fr)
+ * @brief
+ * @version 0.1
+ * @date 2023-02-02
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ncurses.h>
+#include <locale.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
 #include "functions.h"
+#include "includeAll.h"
 
 /**
- * ncurses initialisation.
+ * Initialisation d'ncurses
  */
 void ncurses_init()
 {
-  initscr();            // Start ncurses mode
-  cbreak();             // Disable the buffer cache
-  noecho();             // Disable the display of typed characters
-  keypad(stdscr, TRUE); // Activate specific keys (arrows)
-  refresh();            // Update display
-  curs_set(FALSE);      // Hide the cursor
+  initscr();            // Démarre le mode ncurses
+  cbreak();             // Désactive le cache du buffer
+  noecho();             // Désactive les touches tapées clavier
+  keypad(stdscr, TRUE); // Activations des touches directionnelles
+  refresh();            // Rafraîchis l'affichage
+  curs_set(FALSE);      // Cache le curseur de la souris
 }
 
 /**
- * Stop ncurses.
+ * Arrêt d'ncurses.
  */
 void ncurses_stop()
 {
@@ -22,37 +43,37 @@ void ncurses_stop()
 }
 
 /**
- * Colors initialisation.
+ * Initialisation des couleurs
  */
 void ncurses_colors()
 {
-  // Check color support
+  // Vérification si la machine supporte les couleurs dans un terminal
   if (has_colors() == FALSE)
   {
     ncurses_stop();
-    fprintf(stderr, "The terminal doesn't support colors.\n");
+    fprintf(stderr, "Le terminal ne supporte pas les couleurs\n");
     exit(EXIT_FAILURE);
   }
 
-  // Activate colors
+  // Activation des couleurs
   start_color();
 }
 
 /**
- * Mouse initialisation.
+ * Activation de la souris
  */
 void ncurses_init_mouse()
 {
   if (!mousemask(BUTTON1_PRESSED, NULL))
   {
     ncurses_stop();
-    fprintf(stderr, "Mouse isn't supported.\n");
+    fprintf(stderr, "La souris n'est pas supportée\n");
     exit(EXIT_FAILURE);
   }
 }
 
 /**
- * Get the mouse position.
+ * Obtenir la position de la souris
  */
 int mouse_getpos(int *x, int *y)
 {
@@ -67,7 +88,7 @@ int mouse_getpos(int *x, int *y)
 }
 
 /**
- * @brief Function to declare the different colours in the palette.
+ * @brief Function pour déclarer les différentes couleur de la palette
  *
  */
 void palette()
