@@ -11,7 +11,6 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include <ncurses.h>
 #include <locale.h>
 #include <errno.h>
 #include <unistd.h>
@@ -19,12 +18,14 @@
 #include <dirent.h>
 
 #include "publisher.h"
+#include "item.h"
 
 void publisher(char *nameWorld)
 {
     // Variables
-    WINDOW *window, *windowLevel, *windowTools, *windowInformations, *windowDEBUG;
+    WINDOW *windowLevel, *windowTools, *windowInformations, *windowDEBUG;
     int door = 01, ch, posX, err, posY, life = 00, bomb = 0, fd_World, level = 0;
+    int outil = -1;
     tableAdressage_t *table;
     table = (tableAdressage_t *)malloc(sizeof(tableAdressage_t));
     memset(table->adresse, 0, sizeof(table->adresse));
@@ -60,15 +61,18 @@ void publisher(char *nameWorld)
     ncurses_colors();
     palette();
 
-    // Crée la fenêtre principale
-    window = newwin(29, 78, 0, 0);
+    // Création fenêtre de debugage
+    windowDEBUG = newwin(22, 62, 0, 80);
+    scrollok(windowDEBUG, TRUE);
+    box(windowDEBUG, 0, 0);
+    mvwprintw(windowDEBUG, 0, 0, "DEBUG");
 
     // Crée la fenêtre du niveau
     windowLevel = newwin(22, 62, 0, 0);
     scrollok(windowLevel, TRUE);
     box(windowLevel, 0, 0);
     mvwprintw(windowLevel, 0, 0, "Level");
-    init_Level(windowLevel, windowInformations);
+    
 
     // Crée la fenêtre des outils
     windowTools = newwin(22, 15, 0, 63);
@@ -86,28 +90,25 @@ void publisher(char *nameWorld)
     wattron(windowInformations, COLOR_PAIR(2));
     mvwprintw(windowInformations, 1, 1, "Press 'ESQ' to quit ...");
     wrefresh(windowInformations);
-
-    // Création fenêtre de debugage
-    windowDEBUG = newwin(25, 70, 0, 80);
-    scrollok(windowDEBUG, TRUE);
-    box(windowDEBUG, 0, 0);
-    mvwprintw(windowDEBUG, 0, 0, "DEBUG");
-    wrefresh(windowDEBUG);
+    
 
     // Initialisation du niveau (level_t)
+    init_Level(windowLevel, windowInformations);
     init_matLevel(&niveau);
     niveau = loadLevel(level, table, nameWorld);
     level_display(windowLevel, niveau);
-    wrefresh(windowLevel);
 
-    wrefresh(window);
+
+    wrefresh(windowLevel);
+    wrefresh(windowTools);
+    wrefresh(windowInformations);
 
     // Stop 'ESP'
     while ((ch = getch()) != 27)
     {
         mvwprintw(windowInformations, 2, 1, "                                       ");
+        mvwprintw(windowInformations, 3, 1, "                                       ");
         wrefresh(windowInformations);
-        init_Tools(windowTools, level, door);
         wrefresh(windowTools);
         afficherDEBUG(niveau, windowDEBUG);
         switch (ch)
@@ -118,24 +119,24 @@ void publisher(char *nameWorld)
                 posY = posY;
                 posX = posX;
             }
-            wattron(windowTools, COLOR_PAIR(8));
-            if (posY == 1 && 66 <= posX && posX <= 71)
-                mvwprintw(windowTools, posY, 1, "> Delete");
+            
+            if (posY == 1 && 66 <= posX && posX <= 71) 
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Delete"), wrefresh(windowTools), outil = DELETE,mvwprintw(windowInformations, 3, 1, "Outil selectionne : DELETE                ");
 
             if (posY == 2 && 66 <= posX && posX <= 70)
-                mvwprintw(windowTools, posY, 1, "> Block"), wrefresh(windowTools), place_block(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Block"), wrefresh(windowTools), outil = BLOCK,mvwprintw(windowInformations, 3, 1, "Outil selectionne : BLOCK                "); 
 
             if (posY == 3 && 66 <= posX && posX <= 71)
-                mvwprintw(windowTools, posY, 1, "> Ladder"), wrefresh(windowTools), place_ladder(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Ladder"), wrefresh(windowTools), outil = LADDER,mvwprintw(windowInformations, 3, 1, "Outil selectionne : LADDER                ");
 
             if (posY == 4 && 66 <= posX && posX <= 69)
-                mvwprintw(windowTools, posY, 1, "> Trap"), wrefresh(windowTools), place_Trap(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Trap"), wrefresh(windowTools), outil = TRAP,mvwprintw(windowInformations, 3, 1, "Outil selectionne : TRAP                "); 
 
             if (posY == 5 && 66 <= posX && posX <= 69)
-                mvwprintw(windowTools, posY, 1, "> Gate"), wrefresh(windowTools), place_Gate(windowLevel, windowInformations, windowTools, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Gate"), wrefresh(windowTools), outil = GATE,mvwprintw(windowInformations, 3, 1, "Outil selectionne : GATE                "); 
 
             if (posY == 6 && 66 <= posX && posX <= 68)
-                mvwprintw(windowTools, posY, 1, "> Key"), wrefresh(windowTools), place_Key(windowLevel, windowInformations, windowTools, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Key"), wrefresh(windowTools), outil = KEY,mvwprintw(windowInformations, 3, 1, "Outil selectionne : KEY                "); 
 
             if (posY == 7 && posX == 72)
             {
@@ -154,40 +155,62 @@ void publisher(char *nameWorld)
             }
 
             if (posY == 7 && 66 <= posX && posX <= 69)
-                mvwprintw(windowTools, posY, 1, "> Door"), wrefresh(windowTools), place_Door(windowLevel, windowInformations, door, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Door"), wrefresh(windowTools), outil = DOOR,mvwprintw(windowInformations, 3, 1, "Outil selectionne : DOOR                "); 
 
             if (posY == 8 && 66 <= posX && posX <= 68)
-                mvwprintw(windowTools, posY, 1, "> Exit"), wrefresh(windowTools), place_Exit(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Exit"), wrefresh(windowTools), outil = EXIT,mvwprintw(windowInformations, 3, 1, "Outil selectionne : EXIT                "); 
 
             if (posY == 9 && 66 <= posX && posX <= 69)
-                mvwprintw(windowTools, posY, 1, "> Start"), wrefresh(windowTools), place_Start(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Start"), wrefresh(windowTools), outil = START,mvwprintw(windowInformations, 3, 1, "Outil selectionne : START                ");
 
             if (posY == 10 && 66 <= posX && posX <= 69)
-                mvwprintw(windowTools, posY, 1, "> Robot"), wrefresh(windowTools), place_Robot(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Robot"), wrefresh(windowTools), outil = ROBOT,mvwprintw(windowInformations, 3, 1, "Outil selectionne : ROBOT                ");
 
             if (posY == 11 && 66 <= posX && posX <= 69)
-                mvwprintw(windowTools, posY, 1, "> Probe"), wrefresh(windowTools), place_Probe(windowLevel, windowInformations, &niveau);
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Probe"), wrefresh(windowTools), outil = PROBE,mvwprintw(windowInformations, 3, 1, "Outil selectionne : PROBE                ");
 
             if (posY == 12 && 66 <= posX && posX <= 68)
-                mvwprintw(windowTools, posY, 1, "> Life"), wrefresh(windowTools), place_Life(windowLevel, windowInformations, &niveau), life++;
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Life"), wrefresh(windowTools), outil = LIFE,mvwprintw(windowInformations, 3, 1, "Outil selectionne : LIFE                "); 
 
             if (posY == 13 && 66 <= posX && posX <= 68)
-                mvwprintw(windowTools, posY, 1, "> Bomb"), wrefresh(windowTools), place_bomb(windowLevel, windowInformations, &niveau), bomb++;
+                init_Tools(windowTools, level, door),wattron(windowTools, COLOR_PAIR(8)),mvwprintw(windowTools, posY, 1, "> Bomb"), wrefresh(windowTools), outil = BOMBE,mvwprintw(windowInformations, 3, 1, "Outil selectionne : BOMB                ");
 
             if (posY == 17 && posX == 67) // Diminuer
             {
-                if (level == 1)
-                    level = 25, mvwprintw(windowTools, 17, 6, "%.3d", level);
-                else
-                    level--, mvwprintw(windowTools, 17, 6, "%.3d", level);
+                if (level == 0) {
+                    level = 25;
+                    mvwprintw(windowTools, 17, 6, "%.3d", level);
+                }
+                    
+                else {
+                    level--;
+                    mvwprintw(windowTools, 17, 6, "%.3d", level);
+                }
+                niveau = loadLevel(level, table,nameWorld);
+                level_display(windowLevel, niveau);
+                afficherDEBUG(niveau, windowDEBUG);
+                wrefresh(windowTools);
+                wrefresh(windowDEBUG);
+                    
             }
 
             if (posY == 17 && posX == 73) // Augmenter
             {
-                if (level == 25)
-                    level = 1, mvwprintw(windowTools, 17, 6, "%.3d", level);
-                else
-                    level++, mvwprintw(windowTools, 17, 6, "%.3d", level);
+                if (level == 25) {
+                    level = 0; 
+                    mvwprintw(windowTools, 17, 6, "%.3d", level);
+                }
+                    
+                else {
+                    level++; 
+                    mvwprintw(windowTools, 17, 6, "%.3d", level);
+                }
+                niveau = loadLevel(level, table,nameWorld );
+                level_display(windowLevel, niveau);
+                afficherDEBUG(niveau, windowDEBUG);
+                wrefresh(windowTools);
+                wrefresh(windowDEBUG);
+                    
             }
 
             if (posY == 19 && 67 <= posX && posX <= 72)
@@ -195,31 +218,84 @@ void publisher(char *nameWorld)
                 init_Level(windowLevel, windowInformations);
                 supprimerLevel(table, level, nameWorld);
                 clear_windowLevel(windowLevel);
+                init_matLevel(&niveau);
                 afficherDEBUG(niveau, windowDEBUG);
-                mvwprintw(windowInformations, 3, 1, "Niveau supprimé                ");
+                mvwprintw(windowInformations, 3, 1, "Niveau supprime                ");
                 wrefresh(windowInformations);
                 wrefresh(windowLevel);
             }
 
             wattron(windowInformations, COLOR_PAIR(8));
-
+            afficherDEBUG(niveau, windowDEBUG);
             wrefresh(windowTools);
             wrefresh(windowInformations);
             wrefresh(windowLevel);
+
+            if ((posX >= 1 && posX < 61) && (posY >= 1 && posY < 21))
+            {
+                switch (outil)
+                {
+                case -1:
+                    mvwprintw(windowInformations, 3, 1, "Aucun outil selectionne                 ");
+                    wrefresh(windowInformations);
+                    break;
+                case DELETE:
+                    delete(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;
+                case BLOCK:
+                    place_block(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;
+                case LADDER:
+                    place_ladder(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;
+                case TRAP:
+                    place_Trap(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;    
+                case GATE:
+                    place_Gate(windowLevel, windowInformations, windowTools, &niveau);
+                    break;
+                case KEY:
+                    place_Key(windowLevel, windowInformations, windowTools, &niveau);
+                    break;
+                case DOOR:
+                    place_Door(windowLevel, windowInformations,door, &niveau,posX,posY);
+                    break;
+                case EXIT:
+                    place_Exit(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;
+                case START:
+                    place_Start(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;
+                case ROBOT:
+                    place_Robot(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;  
+                case PROBE:
+                    place_Probe(windowLevel, windowInformations, &niveau,posX,posY);
+                    break;
+                case LIFE:
+                    place_Life(windowLevel, windowInformations, &niveau,posX,posY);
+                    life++;
+                    break;
+                case BOMBE:
+                    place_bomb(windowLevel, windowInformations, &niveau,posX,posY); 
+                    bomb++;
+                    break; 
+                }   
+            }
             break;
 
         // Sauvegarde
         case 's':
+        case 'S':
             supprimerLevel(table, level, nameWorld);
             ajouterLevel(&niveau, table, nameWorld);
-            mvwprintw(windowInformations, 3, 1, "Level sauvegardé                 ");
+            mvwprintw(windowInformations, 3, 1, "Level sauvegarde                 ");
             wrefresh(windowInformations);
             break;
         }
     }
 
     // Supprimer fenêtres
-    delwin(window);
     delwin(windowLevel);
     delwin(windowTools);
     delwin(windowInformations);

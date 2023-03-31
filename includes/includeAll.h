@@ -40,5 +40,9 @@
 #define DOOR5 20
 #define PROBE 21
 #define ROBOT 22
+#define DELETE 23
+#define KEY 24
+#define GATE 25
+#define DOOR 26
 
 #endif

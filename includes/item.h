@@ -20,28 +20,30 @@ void init_PlayInformations(WINDOW *, char);
 
 void init_Tools(WINDOW *, int, int);
 
-void place_block(WINDOW *, WINDOW *, level_t *);
+void delete(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_Trap(WINDOW *, WINDOW *, level_t *);
+void place_block(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_Life(WINDOW *, WINDOW *, level_t *);
+void place_Trap(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_bomb(WINDOW *, WINDOW *, level_t *);
+void place_Life(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_ladder(WINDOW *, WINDOW *, level_t *);
+void place_bomb(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_Start(WINDOW *, WINDOW *, level_t *);
+void place_ladder(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_Exit(WINDOW *, WINDOW *, level_t *);
+void place_Start(WINDOW *, WINDOW *, level_t *,int, int );
 
-void place_Door(WINDOW *, WINDOW *, int, level_t *);
+void place_Exit(WINDOW *, WINDOW *, level_t *,int , int );
+
+void place_Door(WINDOW *, WINDOW *, int, level_t *,int , int );
 
 void place_Gate(WINDOW *, WINDOW *, WINDOW *, level_t *);
 
 void place_Key(WINDOW *, WINDOW *, WINDOW *, level_t *);
 
-void place_Probe(WINDOW *, WINDOW *, level_t *);
+void place_Probe(WINDOW *, WINDOW *, level_t *,int , int );
 
-void place_Robot(WINDOW *, WINDOW *, level_t *);
+void place_Robot(WINDOW *, WINDOW *, level_t *,int , int );
 
 #endif

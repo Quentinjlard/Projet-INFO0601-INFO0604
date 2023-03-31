@@ -73,9 +73,83 @@ void level_display(WINDOW *windowLevel, level_t level)
     for (i = 0; i < nbCols; i++)
     {
         for (j = 0; j < nblignes; j++)
-        {
+        {   
             wattron(windowLevel, COLOR_PAIR(level.colors[i * nblignes + j]));
-            mvwaddch(windowLevel, j + 1, i + 1, level.cells[i * nblignes + j]);
+
+            if (level.cells[i * nblignes + j]== 'B')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
+
+            if (level.cells[i * nblignes + j]== '#')
+                mvwaddch(windowLevel, j + 1, i + 1, '#');
+
+            if (level.cells[i * nblignes + j]== 'V')
+                mvwaddch(windowLevel, j + 1, i + 1, 'V');
+
+            if (level.cells[i * nblignes + j]== ACS_LTEE)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_LTEE);
+
+            if (level.cells[i * nblignes + j]== ACS_HLINE)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_HLINE);
+
+            if (level.cells[i * nblignes + j]== ACS_RTEE)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_RTEE);
+
+            if (level.cells[i * nblignes + j]== 'S')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
+
+            if (level.cells[i * nblignes + j]== 'E')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
+
+            if (level.cells[i * nblignes + j]== '^')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
+
+            if (level.cells[i * nblignes + j]== ACS_PLUS)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_PLUS);
+
+            if (level.cells[i * nblignes + j]==  'K')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
+
+            if (level.cells[i * nblignes + j]==  'o')
+                mvwaddch(windowLevel, j + 1, i + 1, 'o');    
+
+            if (level.cells[i * nblignes + j]==  'D')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');    
+
+            if (level.cells[i * nblignes + j]==  ACS_LLCORNER)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_LLCORNER);
+
+            if (level.cells[i * nblignes + j]==  ACS_LRCORNER)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_LRCORNER);
+
+            if (level.cells[i * nblignes + j]==  ACS_ULCORNER)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_ULCORNER);
+
+            if (level.cells[i * nblignes + j]==  ACS_URCORNER)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_URCORNER);
+
+            if (level.cells[i * nblignes + j]==  ACS_BTEE)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_BTEE);
+
+            if (level.cells[i * nblignes + j]==  ACS_TTEE)
+                mvwaddch(windowLevel, j + 1, i + 1, ACS_TTEE);
+
+            if (level.cells[i * nblignes + j]==  '0')
+                mvwaddch(windowLevel, j + 1, i + 1, '0'); 
+
+            if (level.cells[i * nblignes + j]==  '1')
+                mvwaddch(windowLevel, j + 1, i + 1, '1');
+
+            if (level.cells[i * nblignes + j]==  '2')
+                mvwaddch(windowLevel, j + 1, i + 1, '2'); 
+
+            if (level.cells[i * nblignes + j]==  '3')
+                mvwaddch(windowLevel, j + 1, i + 1, '3');   
+
+            if (level.cells[i * nblignes + j]==  '4')
+                mvwaddch(windowLevel, j + 1, i + 1, '4'); 
+
+            if (level.cells[i * nblignes + j]==  '5')
+                mvwaddch(windowLevel, j + 1, i + 1, '5');     
         }
     }
     wrefresh(windowLevel);
@@ -167,17 +241,6 @@ void init_matLevel(level_t *level)
         level->cells[i] = ' ';
         level->colors[i] = 1;
     }
-    for (int i = 0; i < nblignes; i++)
-    {
-        for (int j = 0; j < nbCols; j++)
-        {
-            if (i == 0 || i == nblignes - 1 || j == 0 || j == nbCols - 1)
-            {
-                level->cells[i * nbCols + j] = ' ';
-                level->colors[i * nbCols + j] = 9;
-            }
-        }
-    }
 }
 
 // Supprimer niveau
@@ -194,7 +257,7 @@ int supprimerLevel(tableAdressage_t *tableAdresse, int niv, char *nomNiv)
     lseek(fd, 0, SEEK_SET);
     if ((err = read(fd, tableAdresse, sizeof(tableAdressage_t))) == -1)
     {
-        perror("Erreur lecture fichier (level)");
+        perror("Erreur lecture table d'adressage(level)");
         exit(EXIT_FAILURE);
     };
 
@@ -202,27 +265,21 @@ int supprimerLevel(tableAdressage_t *tableAdresse, int niv, char *nomNiv)
     int index = niv;
     if (index < 0 || index >= N || tableAdresse->adresse[index] == 0)
     {
-        printf("Entrée non valide\n");
+        // printf("Entrée non valide\n");
         return 1;
     }
 
     // Supprimer l'entrée de la table d'adresses
     tableAdresse->adresse[index] = 0;
 
-    // Mettre à jour la table d'adresses et la table de vide dans le fichier
+    // Mettre à jour la table d'adresses dans le fichier
     lseek(fd, 0, SEEK_SET);
     if ((err = write(fd, tableAdresse, sizeof(tableAdressage_t))) == -1)
     {
-        perror("Erreur écriture table adressage (level)");
+        perror("Erreur ecriture table adressage (level)");
         exit(EXIT_FAILURE);
     };
     lseek(fd, sizeof(tableAdressage_t), SEEK_SET);
-
-    if ((err = close(fd)) == -1)
-    {
-        perror("Erreur fermeture descripteur de fichier (level)");
-        exit(EXIT_FAILURE);
-    };
 
     return 0;
 }

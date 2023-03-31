@@ -19,7 +19,6 @@
 #include <fcntl.h>
 #include <wchar.h>
 #include <ncurses.h>
-#include "includeAll.h"
 #include "tableAdressage.h"
 
 #define nblignes 20

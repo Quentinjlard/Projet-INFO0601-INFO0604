@@ -11,23 +11,22 @@
  */
 #include "item.h"
 #include "functions.h"
-int MODE = 0;
 
 // Initialisation de la fenêtre de niveau (seulement affichage)
 void init_Level(WINDOW *windowLevel, WINDOW *windowInformations)
 {
 
-    wattron(windowLevel, COLOR_PAIR(9));
-    for (int i = 1; i < 61; i++)
-    {
-        mvwprintw(windowLevel, 1, i, " ");
-        mvwprintw(windowLevel, 20, i, " ");
-    }
-    for (int i = 1; i < 21; i++)
-    {
-        mvwprintw(windowLevel, i, 1, " ");
-        mvwprintw(windowLevel, i, 60, " ");
-    }
+    // wattron(windowLevel, COLOR_PAIR(9));
+    // for (int i = 1; i < 61; i++)
+    // {
+    //     mvwprintw(windowLevel, 1, i, " ");
+    //     mvwprintw(windowLevel, 20, i, " ");
+    // }
+    // for (int i = 1; i < 21; i++)
+    // {
+    //     mvwprintw(windowLevel, i, 1, " ");
+    //     mvwprintw(windowLevel, i, 60, " ");
+    // }
 
     wattron(windowLevel, COLOR_PAIR(1));
     for (int i = 2; i < 60; i++)
@@ -77,333 +76,401 @@ void init_Tools(WINDOW *windowTools, int level, int door)
     mvwprintw(windowTools, 19, 4, "DELETE");
 }
 
-// Placer un block
-void place_block(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+// Supprimer un block
+void delete (WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
+
+    wattron(windowInformations, COLOR_PAIR(1));
+
+    mvwprintw(windowInformations, 2, 1, "Supprimer ?");
+    wrefresh(windowInformations);
+
+    if (posX == 0 || posX == 61 || posY == 0 || posY == 21) 
+    {
+        mvwprintw(windowInformations, 2, 1, "Impossible de supprimer ici");
+        return;
+    }
+    wattron(windowLevel, COLOR_PAIR(1));
+    mvwprintw(windowLevel, posY, posX, " ");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX - 1) * nblignes + (posY - 1)] = ' ';
+    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 1;
+
+    mvwprintw(windowInformations, 2, 1, "Supprimer ? OK");
+    
+}
+
+// Placer un block
+void place_block(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
+{
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Block ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX == 0 || posX == 61 || posY == 0 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(9));
-        mvwprintw(windowLevel, posY, posX, " ");
-        wrefresh(windowLevel);
-
-        niv->cells[(posX - 1) * nblignes + (posY - 1)] = 'B';
-        niv->colors[(posX - 1) * nblignes + (posY - 1)] = 9;
-
-        mvwprintw(windowInformations, 2, 1, "Place Block ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(9));
+    mvwprintw(windowLevel, posY, posX, " ");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX - 1) * nblignes + (posY - 1)] = 'B';
+    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 9;
+
+    mvwprintw(windowInformations, 2, 1, "Place Block ? OK");
+    
 }
 
 // Placer une trap
-void place_Trap(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_Trap(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Trap ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX == 0 || posX == 61 || posY == 0 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(9));
-        mvwprintw(windowLevel, posY, posX, "#");
-        wrefresh(windowLevel);
-
-        niv->cells[(posX - 1) * nblignes + (posY - 1)] = '#';
-        niv->colors[(posX - 1) * nblignes + (posY - 1)] = 9;
-
-        mvwprintw(windowInformations, 2, 1, "Place Trap ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(9));
+    mvwprintw(windowLevel, posY, posX, "#");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX - 1) * nblignes + (posY - 1)] = '#';
+    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 9;
+
+    mvwprintw(windowInformations, 2, 1, "Place Trap ? OK");
+    
 }
 
 // Placer une vie
-void place_Life(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_Life(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Life ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX == 0 || posX == 61 || posY == 0 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(2));
-        mvwprintw(windowLevel, posY, posX, "V");
-        wrefresh(windowLevel);
-
-        niv->cells[(posX - 1) * nblignes + (posY - 1)] = 'V';
-        niv->colors[(posX - 1) * nblignes + (posY - 1)] = 2;
-
-        mvwprintw(windowInformations, 2, 1, "Place Life ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(2));
+    mvwprintw(windowLevel, posY, posX, "V");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX - 1) * nblignes + (posY - 1)] = 'V';
+    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 2;
+
+    mvwprintw(windowInformations, 2, 1, "Place Life ? OK");
+    
 }
 
 // Placer une bombe
-void place_bomb(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_bomb(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
-    mvwprintw(windowInformations, 2, 1, "Place Life ?");
+    mvwprintw(windowInformations, 2, 1, "Place Bomb ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX == 0 || posX == 61 || posY == 0 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(8));
-        mvwprintw(windowLevel, posY, posX, "o");
-        wrefresh(windowLevel);
-
-        niv->cells[(posX - 1) * nblignes + (posY - 1)] = 'o';
-        niv->colors[(posX - 1) * nblignes + (posY - 1)] = 8;
-
-        mvwprintw(windowInformations, 2, 1, "Place Life ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(8));
+    mvwprintw(windowLevel, posY, posX, "o");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX - 1) * nblignes + (posY - 1)] = 'o';
+    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 8;
+
+    mvwprintw(windowInformations, 2, 1, "Place Bomb ? OK");
+    
 }
 
 // Placer une échelle
-void place_ladder(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_ladder(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Ladder ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX<=1 ||  posX>=59 || posY == 0 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(4));
-        mvwaddch(windowLevel, posY, posX, ACS_LTEE);
-        mvwaddch(windowLevel, posY, posX + 1, ACS_HLINE);
-        mvwaddch(windowLevel, posY, posX + 2, ACS_RTEE);
-        wrefresh(windowLevel);
-
-        niv->cells[(posX - 1) * nblignes + posY - 1] = ACS_LTEE;
-        niv->cells[(posX)*nblignes + posY - 1] = ACS_HLINE;
-        niv->cells[(posX + 1) * nblignes + posY - 1] = ACS_RTEE;
-
-        niv->colors[(posX - 1) * nblignes + posY - 1] = 4;
-        niv->colors[(posX)*nblignes + posY - 1] = 4;
-        niv->colors[(posX + 1) * nblignes + posY - 1] = 4;
-
-        mvwprintw(windowInformations, 2, 1, "Place Ladder ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(4));
+    mvwaddch(windowLevel, posY, posX, ACS_LTEE);
+    mvwaddch(windowLevel, posY, posX + 1, ACS_HLINE);
+    mvwaddch(windowLevel, posY, posX + 2, ACS_RTEE);
+    wrefresh(windowLevel);
+
+    niv->cells[(posX - 1) * nblignes + posY - 1] = ACS_LTEE;
+    niv->cells[(posX)*nblignes + posY - 1] = ACS_HLINE;
+    niv->cells[(posX + 1) * nblignes + posY - 1] = ACS_RTEE;
+
+    niv->colors[(posX - 1) * nblignes + posY - 1] = 4;
+    niv->colors[(posX)*nblignes + posY - 1] = 4;
+    niv->colors[(posX + 1) * nblignes + posY - 1] = 4;
+
+    mvwprintw(windowInformations, 2, 1, "Place Ladder ? OK");
+    
 }
 
 // Placer un start
-void place_Start(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_Start(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
-    // int i, j;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place start ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX==0 ||  posX>=59 || posY <= 3 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(10));
-
-        mvwprintw(windowLevel, posY, posX, " ");
-        mvwprintw(windowLevel, posY, posX + 1, " ");
-        mvwprintw(windowLevel, posY, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 1, posX, " ");
-        mvwprintw(windowLevel, posY - 1, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 1, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 2, posX, " ");
-        mvwprintw(windowLevel, posY - 2, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 2, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 3, posX, " ");
-        mvwprintw(windowLevel, posY - 3, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 3, posX + 2, " ");
-        wrefresh(windowLevel);
-
-        for (int i = posX - 1; i >= posX - 3; i--)
-        {
-            for (int j = posY - 1; j <= posY + 2; j++)
-            {
-                niv->cells[i * nblignes + j] = 'S';
-                niv->colors[i * nblignes + j] = 10;
-            }
-        }
-
-        mvwprintw(windowInformations, 2, 1, "Place start ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(10));
+
+    mvwprintw(windowLevel, posY, posX, " ");
+    mvwprintw(windowLevel, posY, posX + 1, " ");
+    mvwprintw(windowLevel, posY, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 1, posX, " ");
+    mvwprintw(windowLevel, posY - 1, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 1, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 2, posX, " ");
+    mvwprintw(windowLevel, posY - 2, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 2, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 3, posX, " ");
+    mvwprintw(windowLevel, posY - 3, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 3, posX + 2, " ");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX-1)* nblignes + (posY-1)] = 'S';
+    niv->colors[(posX-1) * nblignes + (posY-1)] = 10;
+
+    niv->cells[(posX)* nblignes + (posY-1)] = 'S';
+    niv->colors[(posX) * nblignes + (posY-1)] = 10;
+
+    niv->cells[(posX+1)* nblignes + (posY-1)] = 'S';
+    niv->colors[(posX+1) * nblignes + (posY-1)] = 10;
+
+    niv->cells[(posX-1)* nblignes + (posY-2)] = 'S';
+    niv->colors[(posX-1) * nblignes + (posY-2)] = 10;
+
+    niv->cells[(posX)* nblignes + (posY-2)] = 'S';
+    niv->colors[(posX) * nblignes + (posY-2)] = 10;
+
+    niv->cells[(posX+1)* nblignes + (posY-2)] = 'S';
+    niv->colors[(posX+1) * nblignes + (posY-2)] = 10;
+
+    niv->cells[(posX-1)* nblignes + (posY-3)] = 'S';
+    niv->colors[(posX-1) * nblignes + (posY-3)] = 10;
+
+    niv->cells[(posX-1)* nblignes + (posY-3)] = 'S';
+    niv->colors[(posX-1) * nblignes + (posY-3)] = 10;
+
+    niv->cells[(posX)* nblignes + (posY-3)] = 'S';
+    niv->colors[(posX) * nblignes + (posY-3)] = 10;
+
+    niv->cells[(posX+1)* nblignes + (posY-3)] = 'S';
+    niv->colors[(posX+1) * nblignes + (posY-3)] = 10;
+
+    niv->cells[(posX-1)* nblignes + (posY-4)] = 'S';
+    niv->colors[(posX-1) * nblignes + (posY-4)] = 10;
+
+    niv->cells[(posX)* nblignes + (posY-4)] = 'S';
+    niv->colors[(posX) * nblignes + (posY-4)] = 10;
+
+    niv->cells[(posX+1)* nblignes + (posY-4)] = 'S';
+    niv->colors[(posX+1) * nblignes + (posY-4)] = 10;
+
+    mvwprintw(windowInformations, 2, 1, "Place start ? OK");
+    
 }
 
-// Placer un exit
-void place_Exit(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_Exit(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
-    // int i, j;
+    int posX = x, posY = y;
+
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place start ?");
     wrefresh(windowInformations);
 
-    ch = getch();
-    switch (ch)
+    
+    if (posX==0 ||  posX>=59 || posY <= 3 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-        wattron(windowLevel, COLOR_PAIR(12));
-
-        mvwprintw(windowLevel, posY, posX, " ");
-        mvwprintw(windowLevel, posY, posX + 1, " ");
-        mvwprintw(windowLevel, posY, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 1, posX, " ");
-        mvwprintw(windowLevel, posY - 1, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 1, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 2, posX, " ");
-        mvwprintw(windowLevel, posY - 2, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 2, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 3, posX, " ");
-        mvwprintw(windowLevel, posY - 3, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 3, posX + 2, " ");
-        wrefresh(windowLevel);
-
-        for (int i = posX - 1; i >= posX - 3; i--)
-        {
-            for (int j = posY - 1; j <= posY + 2; j++)
-            {
-                niv->cells[i * nblignes + j] = 'E';
-                niv->colors[i * nblignes + j] = 17;
-            }
-        }
-
-        mvwprintw(windowInformations, 2, 1, "Place start ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+    wattron(windowLevel, COLOR_PAIR(12));
+
+    mvwprintw(windowLevel, posY, posX, " ");
+    mvwprintw(windowLevel, posY, posX + 1, " ");
+    mvwprintw(windowLevel, posY, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 1, posX, " ");
+    mvwprintw(windowLevel, posY - 1, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 1, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 2, posX, " ");
+    mvwprintw(windowLevel, posY - 2, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 2, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 3, posX, " ");
+    mvwprintw(windowLevel, posY - 3, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 3, posX + 2, " ");
+    wrefresh(windowLevel);
+
+    niv->cells[(posX-1)* nblignes + (posY-1)] = 'E';
+    niv->colors[(posX-1) * nblignes + (posY-1)] = 12;
+
+    niv->cells[(posX)* nblignes + (posY-1)] = 'E';
+    niv->colors[(posX) * nblignes + (posY-1)] = 12;
+
+    niv->cells[(posX+1)* nblignes + (posY-1)] = 'E';
+    niv->colors[(posX+1) * nblignes + (posY-1)] = 12;
+
+    niv->cells[(posX-1)* nblignes + (posY-2)] = 'E';
+    niv->colors[(posX-1) * nblignes + (posY-2)] = 12;
+
+    niv->cells[(posX)* nblignes + (posY-2)] = 'E';
+    niv->colors[(posX) * nblignes + (posY-2)] = 12;
+
+    niv->cells[(posX+1)* nblignes + (posY-2)] = 'E';
+    niv->colors[(posX+1) * nblignes + (posY-2)] = 12;
+
+    niv->cells[(posX-1)* nblignes + (posY-3)] = 'E';
+    niv->colors[(posX-1) * nblignes + (posY-3)] = 12;
+
+    niv->cells[(posX-1)* nblignes + (posY-3)] = 'E';
+    niv->colors[(posX-1) * nblignes + (posY-3)] = 12;
+
+    niv->cells[(posX)* nblignes + (posY-3)] = 'E';
+    niv->colors[(posX) * nblignes + (posY-3)] = 12;
+
+    niv->cells[(posX+1)* nblignes + (posY-3)] = 'E';
+    niv->colors[(posX+1) * nblignes + (posY-3)] = 12;
+
+    niv->cells[(posX-1)* nblignes + (posY-4)] = 'E';
+    niv->colors[(posX-1) * nblignes + (posY-4)] = 12;
+
+    niv->cells[(posX)* nblignes + (posY-4)] = 'E';
+    niv->colors[(posX) * nblignes + (posY-4)] = 12;
+
+    niv->cells[(posX+1)* nblignes + (posY-4)] = 'E';
+    niv->colors[(posX+1) * nblignes + (posY-4)] = 12;
+
+    mvwprintw(windowInformations, 2, 1, "Place start ? OK");
+    
 }
 
 // Placer une porte
-void place_Door(WINDOW *windowLevel, WINDOW *windowInformations, int door, level_t *niv)
+void place_Door(WINDOW *windowLevel, WINDOW *windowInformations, int door, level_t *niv,int x, int y)
 {
-    int posX, posY, ch, doorBin = 16;
-
-    switch (door)
-    {
-    case 1:
-        doorBin = DOOR1;
-        break;
-    case 2:
-        doorBin = DOOR2;
-        break;
-    case 3:
-        doorBin = DOOR3;
-        break;
-    case 4:
-        doorBin = DOOR4;
-        break;
-    case 5:
-        doorBin = DOOR5;
-        break;
-    }
+    int posX = x, posY = y;
+    char d; 
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Door ?");
     wrefresh(windowInformations);
 
-    ch = getch();
-    switch (ch)
+    
+    if (posX==0 ||  posX>=59 || posY <= 3 || posY == 21) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
-
-        for (int i = posX - 1; i >= posX - 3; i--)
-        {
-            for (int j = posY - 1; j <= posY + 2; j++)
-            {
-                niv->cells[i * nblignes + j] = door;
-                niv->colors[i * nblignes + j] = 16;
-            }
-        }
-
-        wattron(windowLevel, COLOR_PAIR(8));
-        mvwprintw(windowLevel, posY - 3, posX, "%.2d", door);
-
-        wattron(windowLevel, COLOR_PAIR(11));
-        mvwprintw(windowLevel, posY, posX, " ");
-        mvwprintw(windowLevel, posY, posX + 1, " ");
-        mvwprintw(windowLevel, posY, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 1, posX, " ");
-        mvwprintw(windowLevel, posY - 1, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 1, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 2, posX, " ");
-        mvwprintw(windowLevel, posY - 2, posX + 1, " ");
-        mvwprintw(windowLevel, posY - 2, posX + 2, " ");
-        mvwprintw(windowLevel, posY - 3, posX + 2, " ");
-
-        wrefresh(windowLevel);
-        mvwprintw(windowInformations, 2, 1, "Place Door ? OK");
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
+        
+    niv->cells[(posX-1)* nblignes + (posY-1)] = 'D';
+    niv->colors[(posX-1) * nblignes + (posY-1)] = 11;
+
+    niv->cells[(posX)* nblignes + (posY-1)] = 'D';
+    niv->colors[(posX) * nblignes + (posY-1)] = 11;
+
+    niv->cells[(posX+1)* nblignes + (posY-1)] = 'D';
+    niv->colors[(posX+1) * nblignes + (posY-1)] = 11;
+
+    niv->cells[(posX-1)* nblignes + (posY-2)] = 'D';
+    niv->colors[(posX-1) * nblignes + (posY-2)] = 11;
+
+    niv->cells[(posX)* nblignes + (posY-2)] = 'D';
+    niv->colors[(posX) * nblignes + (posY-2)] = 11;
+
+    niv->cells[(posX+1)* nblignes + (posY-2)] = 'D';
+    niv->colors[(posX+1) * nblignes + (posY-2)] = 11;
+
+    niv->cells[(posX-1)* nblignes + (posY-3)] = 'D';
+    niv->colors[(posX-1) * nblignes + (posY-3)] = 11;
+
+    niv->cells[(posX-1)* nblignes + (posY-3)] = 'D';
+    niv->colors[(posX-1) * nblignes + (posY-3)] = 11;
+
+    niv->cells[(posX)* nblignes + (posY-3)] = 'D';
+    niv->colors[(posX) * nblignes + (posY-3)] = 11;
+
+    niv->cells[(posX+1)* nblignes + (posY-3)] = 'D';
+    niv->colors[(posX+1) * nblignes + (posY-3)] = 11;
+
+    niv->cells[(posX-1)* nblignes + (posY-4)] = '0';
+    niv->colors[(posX-1) * nblignes + (posY-4)] = 8;
+
+    d = door+'0';
+
+    niv->cells[(posX)* nblignes + (posY-4)] = d;
+    niv->colors[(posX) * nblignes + (posY-4)] = 8;
+
+    niv->cells[(posX+1)* nblignes + (posY-4)] = 'D';
+    niv->colors[(posX+1) * nblignes + (posY-4)] = 11;
+
+    wattron(windowLevel, COLOR_PAIR(8));
+    mvwprintw(windowLevel, posY - 3, posX, "%.2d", door);
+
+    wattron(windowLevel, COLOR_PAIR(11));
+    mvwprintw(windowLevel, posY, posX, " ");
+    mvwprintw(windowLevel, posY, posX + 1, " ");
+    mvwprintw(windowLevel, posY, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 1, posX, " ");
+    mvwprintw(windowLevel, posY - 1, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 1, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 2, posX, " ");
+    mvwprintw(windowLevel, posY - 2, posX + 1, " ");
+    mvwprintw(windowLevel, posY - 2, posX + 2, " ");
+    mvwprintw(windowLevel, posY - 3, posX + 2, " ");
+
+    wrefresh(windowLevel);
+    mvwprintw(windowInformations, 2, 1, "Place Door ? OK");
+    
 }
 
 // Placer une gate
 void place_Gate(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowTools, level_t *niv)
 {
-    int posX, posY, ch, color = 0; // gateB;
+    int posX, posY, color = 0,ch; // gateB;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
@@ -422,16 +489,16 @@ void place_Gate(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowT
     }
 
     if (posY == 5 && posX == 73)
-        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 10, "^"), color = 6; // gateB = GATEP;
+        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 10, "^"), color = 6; 
 
     if (posY == 5 && posX == 74)
-        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 11, "^"), color = 3; // gateB = GATEG;
+        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 11, "^"), color = 3; 
 
     if (posY == 5 && posX == 75)
-        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 12, "^"), color = 4; // gateB = GATEY;
+        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 12, "^"), color = 4; 
 
     if (posY == 5 && posX == 76)
-        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 13, "^"), color = 5; // gateB = GATEB;
+        mvwprintw(windowTools, 6, 10, " "), mvwprintw(windowTools, 6, 13, "^"), color = 5; 
 
     wrefresh(windowTools);
     mvwprintw(windowInformations, 2, 1, "Place Gate ?");
@@ -453,13 +520,8 @@ void place_Gate(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowT
     wrefresh(windowLevel);
 
     niv->cells[(posX - 1) * nblignes + posY - 1] = ACS_PLUS;
-    niv->cells[(posX - 1) * nblignes + posY] = ACS_PLUS;
-    niv->cells[(posX - 1) * nblignes + posY + 1] = ACS_PLUS;
-    niv->cells[(posX - 1) * nblignes + posY + 2] = ACS_PLUS;
     niv->colors[(posX - 1) * nblignes + posY - 1] = color;
-    niv->colors[(posX - 1) * nblignes + posY] = color;
-    niv->colors[(posX - 1) * nblignes + posY + 1] = color;
-    niv->colors[(posX - 1) * nblignes + posY + 2] = color;
+
 
     mvwprintw(windowInformations, 2, 1, "Place Gate ? OK");
     wrefresh(windowInformations);
@@ -468,7 +530,7 @@ void place_Gate(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowT
 // Placer une clé
 void place_Key(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowTools, level_t *niv)
 {
-    int posX, posY, ch, colorFD, color; // keyB;
+    int posX, posY, colorFD, color,ch; // keyB;
 
     wattron(windowInformations, COLOR_PAIR(8));
     mvwprintw(windowInformations, 2, 1, "Select color");
@@ -483,6 +545,11 @@ void place_Key(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowTo
             posY = posY;
             posX = posX;
         }
+    }
+    if (posX==0 ||  posX==61 || posY == 0 || posY >= 20) 
+    {
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
 
     if (posY == 5 && posX == 73)
@@ -514,25 +581,8 @@ void place_Key(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowTo
 
     niv->cells[(posX - 1) * nblignes + posY - 1] = 'K';
     niv->cells[(posX - 1) * nblignes + posY] = ACS_LLCORNER;
-    switch (color)
-    {
-    case 3:
-        niv->colors[(posX - 1) * nblignes + posY - 1] = 11;
-        niv->colors[(posX - 1) * nblignes + posY] = KEYG;
-        break;
-    case 4:
-        niv->colors[(posX - 1) * nblignes + posY - 1] = 12;
-        niv->colors[(posX - 1) * nblignes + posY] = KEYY;
-        break;
-    case 5:
-        niv->colors[(posX - 1) * nblignes + posY - 1] = 13;
-        niv->colors[(posX - 1) * nblignes + posY] = KEYB;
-        break;
-    case 6:
-        niv->colors[(posX - 1) * nblignes + posY - 1] = 10;
-        niv->colors[(posX - 1) * nblignes + posY] = KEYP;
-        break;
-    }
+    niv->colors[(posX - 1) * nblignes + posY - 1] = colorFD;
+    niv->colors[(posX - 1) * nblignes + posY] = color;
 
     wattron(windowLevel, COLOR_PAIR(colorFD));
     mvwprintw(windowLevel, posY, posX, " ");
@@ -544,24 +594,19 @@ void place_Key(WINDOW *windowLevel, WINDOW *windowInformations, WINDOW *windowTo
 }
 
 // Placer une sonde
-void place_Probe(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_Probe(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Probe ?");
     wrefresh(windowInformations);
-
-    ch = getch();
-    switch (ch)
+    
+    if (posX<=1 ||  posX>=60 || posY == 0 || posY >= 20) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
 
     wattron(windowLevel, COLOR_PAIR(8));
@@ -573,43 +618,39 @@ void place_Probe(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
     mvwaddch(windowLevel, posY + 1, posX + 1, ACS_LRCORNER);
     wrefresh(windowLevel);
 
-    niv->cells[(posX - 1) * nblignes + (posY - 1)] = ACS_LTEE;
-    niv->cells[posX * nblignes + (posY - 1)] = ACS_HLINE;
-    niv->cells[(posX + 1) * nblignes + (posY - 1)] = ACS_RTEE;
-    niv->cells[(posX - 1) * nblignes + posY] = ACS_LLCORNER;
-    niv->cells[(posX)*nblignes + posY] = ACS_HLINE;
-    niv->cells[(posX + 1) * nblignes + posY] = ACS_LRCORNER;
+    niv->cells[(posX -2) * nblignes + (posY - 1)] = ACS_LTEE;
+    niv->cells[(posX-1) * nblignes + (posY - 1)] = ACS_HLINE;
+    niv->cells[posX * nblignes + (posY - 1)] = ACS_RTEE;
+    niv->cells[(posX - 2) * nblignes + posY] = ACS_LLCORNER;
+    niv->cells[(posX-1)*nblignes + posY] = ACS_HLINE;
+    niv->cells[posX * nblignes + posY] = ACS_LRCORNER;
 
-    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 8;
+    niv->colors[(posX -2) * nblignes + (posY - 1)] = 8;
+    niv->colors[(posX-1) * nblignes + (posY - 1)] = 8;
     niv->colors[posX * nblignes + (posY - 1)] = 8;
-    niv->colors[(posX + 1) * nblignes + (posY - 1)] = 8;
-    niv->colors[(posX - 1) * nblignes + posY] = 8;
+    niv->colors[(posX - 2) * nblignes + posY] = 8;
+    niv->colors[(posX-1)*nblignes + posY] = 8;
     niv->colors[posX * nblignes + posY] = 8;
-    niv->colors[(posX + 1) * nblignes + posY] = 8;
 
     mvwprintw(windowInformations, 2, 1, "Place Probe ? OK");
     wrefresh(windowInformations);
 }
 
 // Placer un robot
-void place_Robot(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
+void place_Robot(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv,int x, int y)
 {
-    int posX, posY, ch;
+    int posX = x, posY = y;
 
     wattron(windowInformations, COLOR_PAIR(8));
 
     mvwprintw(windowInformations, 2, 1, "Place Robot ?");
     wrefresh(windowInformations);
 
-    ch = getch();
-    switch (ch)
+    
+    if (posX<=1 ||  posX>=60 || posY <= 2 || posY >= 20) 
     {
-    case KEY_MOUSE:
-        if (mouse_getpos(&posX, &posY) == OK)
-        {
-            posY = posY;
-            posX = posX;
-        }
+        mvwprintw(windowInformations, 2, 1, "Impossible de placer ici");
+        return;
     }
 
     wattron(windowLevel, COLOR_PAIR(8));
@@ -630,21 +671,37 @@ void place_Robot(WINDOW *windowLevel, WINDOW *windowInformations, level_t *niv)
     mvwaddch(windowLevel, posY + 1, posX, ACS_BTEE);
     mvwaddch(windowLevel, posY + 1, posX + 1, ACS_URCORNER);
     wrefresh(windowLevel);
-    niv->cells[(posX - 1) * nblignes + (posY - 1)] = ACS_ULCORNER;
-    niv->cells[posX * nblignes + (posY - 1)] = ACS_BTEE;
-    niv->cells[(posX + 1) * nblignes + (posY - 1)] = ACS_URCORNER;
+    niv->cells[(posX - 2) * nblignes + (posY - 3)] = ACS_ULCORNER;
+    niv->cells[(posX - 1)* nblignes + (posY - 3)] = ACS_BTEE;
+    niv->cells[posX * nblignes + (posY - 3)] = ACS_URCORNER;
 
-    niv->cells[(posX - 1) * nblignes + (posY - 2)] = ACS_HLINE;
-    niv->cells[posX * nblignes + (posY - 2)] = ACS_PLUS;
-    niv->cells[(posX + 1) * nblignes + (posY - 2)] = ACS_HLINE;
+    niv->cells[(posX - 2) * nblignes + (posY - 2)] = ACS_LLCORNER;
+    niv->cells[(posX - 1) * nblignes + (posY - 2)] = ACS_TTEE;
+    niv->cells[posX * nblignes + (posY - 2)] = ACS_LRCORNER;
 
-    niv->cells[(posX - 1) * nblignes + (posY - 3)] = ACS_LLCORNER;
-    niv->cells[posX * nblignes + (posY - 3)] = ACS_TTEE;
-    niv->cells[(posX + 1) * nblignes + (posY - 3)] = ACS_LRCORNER;
+    niv->cells[(posX - 2) * nblignes + (posY - 1)] = ACS_HLINE;
+    niv->cells[(posX - 1) * nblignes + (posY - 1)] = ACS_PLUS;
+    niv->cells[posX * nblignes + (posY - 1)] = ACS_HLINE;
 
-    niv->cells[(posX - 1) * nblignes + (posY - 4)] = ACS_ULCORNER;
-    niv->cells[posX * nblignes + (posY - 4)] = ACS_BTEE;
-    niv->cells[(posX + 1) * nblignes + (posY - 4)] = ACS_URCORNER;
+    niv->cells[(posX - 2) * nblignes + (posY)] = ACS_ULCORNER;
+    niv->cells[(posX - 1) * nblignes + (posY)] = ACS_BTEE;
+    niv->cells[posX * nblignes + (posY)] = ACS_URCORNER;
+
+    niv->colors[(posX - 2) * nblignes + (posY - 3)] = 8 ;
+    niv->colors[(posX - 1)* nblignes + (posY - 3)] = 8 ;
+    niv->colors[posX * nblignes + (posY - 3)] = 8 ;
+
+    niv->colors[(posX - 2) * nblignes + (posY - 2)] = 8 ;
+    niv->colors[(posX - 1) * nblignes + (posY - 2)] = 8 ;
+    niv->colors[posX * nblignes + (posY - 2)] = 8;
+
+    niv->colors[(posX - 2) * nblignes + (posY - 1)] = 8 ;
+    niv->colors[(posX - 1) * nblignes + (posY - 1)] = 8 ;
+    niv->colors[posX * nblignes + (posY - 1)] = 8 ;
+
+    niv->colors[(posX - 2) * nblignes + (posY)] = 8 ;
+    niv->colors[(posX - 1) * nblignes + (posY)] = 8 ;
+    niv->colors[posX * nblignes + (posY)] = 8 ;
 
     mvwprintw(windowInformations, 2, 1, "Place Robot ? OK");
     wrefresh(windowInformations);

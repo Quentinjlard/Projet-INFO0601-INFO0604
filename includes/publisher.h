@@ -12,7 +12,7 @@
 #ifndef __PUBLISHER_H__
 #define __PUBLISHER_H__
 
-#include "item.h"
+
 #include "functions.h"
 
 /**
