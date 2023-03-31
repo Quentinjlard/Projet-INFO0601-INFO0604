@@ -2,9 +2,9 @@
 # MAIN CONFIGURATION
 #
 
-EXEC = menu
-OBJECTS = functions.o item.o publisher.o fileMap.o playingField.o
-PROJECT_NAME = menu
+EXEC = menu serveur 
+OBJECTS = functions.o item.o publisher.o playingField.o client.o tableAdressage.o level.o
+PROJECT_NAME = menu serveur 
 
 SRC_DIR = src
 OBJECTS_DIR = obj
