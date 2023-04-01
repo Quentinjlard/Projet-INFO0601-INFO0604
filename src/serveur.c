@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     // Variables Serveur TCP
     int fd, sockclient;
-    char portTCP[2560];
+    int portTCP;
     struct sockaddr_in address;
 
     // Création socket
@@ -257,8 +257,13 @@ int main(int argc, char *argv[])
                 }
 
                 // Envoi du numéro de port TCP
-                sprintf(portTCP, "%d", PORT2);
-                strcpy(response.msg, portTCP);
+                if (getsockname(fd, (struct sockaddr *)&address, &size) == -1)
+                {
+                    printf("Erreur lors de la récupération du numéro de port\n");
+                    exit(1);
+                }
+                portTCP = ntohs(address.sin_port);
+                sprintf(response.msg, "%d", portTCP);
                 if (sendto(sockfd, &response, sizeof(response), 0, (struct sockaddr *)&client_address, sizeof(struct sockaddr_in)) == -1)
                 {
                     perror("Erreur lors de l'envoi d'une requête");

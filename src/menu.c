@@ -101,31 +101,31 @@ int main()
                 perror("Erreur ouverture du fichier");
                 exit(EXIT_FAILURE);
             }
+            if (close(fd_World) == -1)
+            {
+                perror("Erreur fermeture du fichier");
+                exit(EXIT_FAILURE);
+            }
+
+            publisher(nameWorld);
+
+            // Supprimer fenêtre
+            delwin(window);
+
+            // Stop ncurses
+            ncurses_stop();
         }
 
-        if (close(fd_World) == -1)
+        if (ch == '2')
         {
-            perror("Erreur fermeture du fichier");
-            exit(EXIT_FAILURE);
+            // Supprimer fenêtre
+            delwin(window);
+
+            // Stop ncurses
+            ncurses_stop();
+
+            // Lancement du client
+            client();
         }
-
-        publisher(nameWorld);
-
-        // Supprimer fenêtre
-        delwin(window);
-
-        // Stop ncurses
-        ncurses_stop();
-    }
-    if (ch == '2')
-    {
-        // Supprimer fenêtre
-        delwin(window);
-
-        // Stop ncurses
-        ncurses_stop();
-
-        // Lancement du client
-        client();
     }
 }

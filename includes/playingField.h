@@ -12,11 +12,15 @@
 #ifndef __playingField_H__
 #define __playingField_H__
 
+#include "item.h"
 /**
  * @brief
  *
  */
 
 void playingField(char *);
+int searchStart(level_t);
+void spawnPlayer(level_t *, int);
+void movePlayer(level_t *niveau, level_t buff, int pos, int direction);
 
 #endif

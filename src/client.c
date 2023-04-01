@@ -196,7 +196,7 @@ void client()
         break;
     }
 
-    // Récupération numéro de port UDP
+    // Récupération numéro de port TCP
     if (recvfrom(sockfd, &response, sizeof(response), 0, NULL, 0) == -1)
     {
         perror("Erreur récupération");

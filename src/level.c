@@ -73,83 +73,89 @@ void level_display(WINDOW *windowLevel, level_t level)
     for (i = 0; i < nbCols; i++)
     {
         for (j = 0; j < nblignes; j++)
-        {   
+        {
             wattron(windowLevel, COLOR_PAIR(level.colors[i * nblignes + j]));
 
-            if (level.cells[i * nblignes + j]== 'B')
+            if (level.cells[i * nblignes + j] == 'B')
                 mvwaddch(windowLevel, j + 1, i + 1, ' ');
 
-            if (level.cells[i * nblignes + j]== '#')
+            if (level.cells[i * nblignes + j] == '#')
                 mvwaddch(windowLevel, j + 1, i + 1, '#');
 
-            if (level.cells[i * nblignes + j]== 'V')
+            if (level.cells[i * nblignes + j] == 'V')
                 mvwaddch(windowLevel, j + 1, i + 1, 'V');
 
-            if (level.cells[i * nblignes + j]== ACS_LTEE)
+            if (level.cells[i * nblignes + j] == 'T')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
+
+            if (level.cells[i * nblignes + j] == '-')
+                mvwaddch(windowLevel, j + 1, i + 1, '-');
+
+            if (level.cells[i * nblignes + j] == ACS_LTEE)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_LTEE);
 
-            if (level.cells[i * nblignes + j]== ACS_HLINE)
+            if (level.cells[i * nblignes + j] == ACS_HLINE)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_HLINE);
 
-            if (level.cells[i * nblignes + j]== ACS_RTEE)
+            if (level.cells[i * nblignes + j] == ACS_RTEE)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_RTEE);
 
-            if (level.cells[i * nblignes + j]== 'S')
+            if (level.cells[i * nblignes + j] == 'S')
                 mvwaddch(windowLevel, j + 1, i + 1, ' ');
 
-            if (level.cells[i * nblignes + j]== 'E')
+            if (level.cells[i * nblignes + j] == 'E')
                 mvwaddch(windowLevel, j + 1, i + 1, ' ');
 
-            if (level.cells[i * nblignes + j]== '^')
+            if (level.cells[i * nblignes + j] == '^')
                 mvwaddch(windowLevel, j + 1, i + 1, ' ');
 
-            if (level.cells[i * nblignes + j]== ACS_PLUS)
+            if (level.cells[i * nblignes + j] == ACS_PLUS)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_PLUS);
 
-            if (level.cells[i * nblignes + j]==  'K')
+            if (level.cells[i * nblignes + j] == 'K')
                 mvwaddch(windowLevel, j + 1, i + 1, ' ');
 
-            if (level.cells[i * nblignes + j]==  'o')
-                mvwaddch(windowLevel, j + 1, i + 1, 'o');    
+            if (level.cells[i * nblignes + j] == 'o')
+                mvwaddch(windowLevel, j + 1, i + 1, 'o');
 
-            if (level.cells[i * nblignes + j]==  'D')
-                mvwaddch(windowLevel, j + 1, i + 1, ' ');    
+            if (level.cells[i * nblignes + j] == 'D')
+                mvwaddch(windowLevel, j + 1, i + 1, ' ');
 
-            if (level.cells[i * nblignes + j]==  ACS_LLCORNER)
+            if (level.cells[i * nblignes + j] == ACS_LLCORNER)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_LLCORNER);
 
-            if (level.cells[i * nblignes + j]==  ACS_LRCORNER)
+            if (level.cells[i * nblignes + j] == ACS_LRCORNER)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_LRCORNER);
 
-            if (level.cells[i * nblignes + j]==  ACS_ULCORNER)
+            if (level.cells[i * nblignes + j] == ACS_ULCORNER)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_ULCORNER);
 
-            if (level.cells[i * nblignes + j]==  ACS_URCORNER)
+            if (level.cells[i * nblignes + j] == ACS_URCORNER)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_URCORNER);
 
-            if (level.cells[i * nblignes + j]==  ACS_BTEE)
+            if (level.cells[i * nblignes + j] == ACS_BTEE)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_BTEE);
 
-            if (level.cells[i * nblignes + j]==  ACS_TTEE)
+            if (level.cells[i * nblignes + j] == ACS_TTEE)
                 mvwaddch(windowLevel, j + 1, i + 1, ACS_TTEE);
 
-            if (level.cells[i * nblignes + j]==  '0')
-                mvwaddch(windowLevel, j + 1, i + 1, '0'); 
+            if (level.cells[i * nblignes + j] == '0')
+                mvwaddch(windowLevel, j + 1, i + 1, '0');
 
-            if (level.cells[i * nblignes + j]==  '1')
+            if (level.cells[i * nblignes + j] == '1')
                 mvwaddch(windowLevel, j + 1, i + 1, '1');
 
-            if (level.cells[i * nblignes + j]==  '2')
-                mvwaddch(windowLevel, j + 1, i + 1, '2'); 
+            if (level.cells[i * nblignes + j] == '2')
+                mvwaddch(windowLevel, j + 1, i + 1, '2');
 
-            if (level.cells[i * nblignes + j]==  '3')
-                mvwaddch(windowLevel, j + 1, i + 1, '3');   
+            if (level.cells[i * nblignes + j] == '3')
+                mvwaddch(windowLevel, j + 1, i + 1, '3');
 
-            if (level.cells[i * nblignes + j]==  '4')
-                mvwaddch(windowLevel, j + 1, i + 1, '4'); 
+            if (level.cells[i * nblignes + j] == '4')
+                mvwaddch(windowLevel, j + 1, i + 1, '4');
 
-            if (level.cells[i * nblignes + j]==  '5')
-                mvwaddch(windowLevel, j + 1, i + 1, '5');     
+            if (level.cells[i * nblignes + j] == '5')
+                mvwaddch(windowLevel, j + 1, i + 1, '5');
         }
     }
     wrefresh(windowLevel);
