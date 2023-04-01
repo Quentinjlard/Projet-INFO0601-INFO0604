@@ -302,6 +302,7 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+        occupe = 0;
     }
 
     // Fermeture socket

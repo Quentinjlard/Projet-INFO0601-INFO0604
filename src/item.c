@@ -720,7 +720,7 @@ void init_PlayInformations(WINDOW *windowPlayerInformation, char level)
 
     wattron(windowPlayerInformation, COLOR_PAIR(8));
     mvwprintw(windowPlayerInformation, 10, 1, "Bombs");
-    posX = 3;
+    posX = 2;
     for (int i = 0; i < 3; i++)
     {
         mvwprintw(windowPlayerInformation, 12, posX, "o");
