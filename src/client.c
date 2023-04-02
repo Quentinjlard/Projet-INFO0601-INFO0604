@@ -50,7 +50,7 @@ void client()
         exit(EXIT_FAILURE);
     }
 
-    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVeuillez saisir l'adresse du serveur.\n ");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVeuillez saisir l'adresse du serveur.\n ");
     // Récupération adresse serveur
     if (scanf("%s", adresseServeur) == -1)
     {

@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
         {
 
             // Réponse (menu)
-            strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-------------------------------\n\tJEU\n-------------------------------\n\n [1] Créer une partie.\n [2] Rejoindre une partie existante.\n-------------------------------\n");
+            strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-------------------------------\n\tJEU\n-------------------------------\n\n [1] Créer une partie.\n [2] Rejoindre une partie existante.\n-------------------------------\n");
 
             // Envoi menu :
             if (sendto(sockfd, &response, sizeof(response), 0, (struct sockaddr *)&client_address, sizeof(struct sockaddr_in)) == -1)
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
             {
             // Créer partie
             case 1:
-                strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-------------------------------\n\tJEU\n-------------------------------\n\n Veuillez entre le nombre de joueur (MAX 4).\n-------------------------------\n");
+                strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-------------------------------\n\tJEU\n-------------------------------\n\n Veuillez entre le nombre de joueur (MAX 4).\n-------------------------------\n");
 
                 // Envoi demande nbre de joueurs :
                 if (sendto(sockfd, &response, sizeof(response), 0, (struct sockaddr *)&client_address, sizeof(struct sockaddr_in)) == -1)
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
                 }
                 printf("Serveur: nombre de joueur pour la partie ( message reçu ) : '%s'.\n", request.msg);
                 nbJoueur = atoi(request.msg);
-                strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-------------------------------\n\tJEU\n-------------------------------\n\n Liste des niveaux.\n-------------------------------\n");
+                strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-------------------------------\n\tJEU\n-------------------------------\n\n Liste des niveaux.\n-------------------------------\n");
 
                 // Ouverture dossier, liste niveaux
                 dossier = opendir(".");
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 
             // Rejoindre partie
             case 2:
-                strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n----------------------------------------------------\n\t\t\tJEU\n----------------------------------------------------\n\n\t\tListe des parties en cours :\n----------------------------------------------------\n\n\n\n\n\n\n\n\n\n\n");
+                strcpy(response.msg, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n----------------------------------------------------\n\t\t\tJEU\n----------------------------------------------------\n\n\t\tListe des parties en cours :\n----------------------------------------------------\n\n\n\n\n\n\n\n\n\n\n");
                 // Envoi liste de parties en cours :
                 if (sendto(sockfd, &response, sizeof(response), 0, (struct sockaddr *)&client_address, sizeof(struct sockaddr_in)) == -1)
                 {

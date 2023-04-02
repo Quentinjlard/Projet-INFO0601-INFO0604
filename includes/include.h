@@ -22,13 +22,13 @@
 // Request
 typedef struct
 {
-    char msg[MAX];
+    char msg[MAX * 2];
 } request_t;
 
 // Response
 typedef struct
 {
-    char msg[MAX];
+    char msg[MAX * 2];
 } response_t;
 
 void client();

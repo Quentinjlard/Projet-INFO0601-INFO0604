@@ -33,7 +33,7 @@ void init_Level(WINDOW *windowLevel, WINDOW *windowInformations)
         for (int j = 2; j < 20; j++)
             mvwprintw(windowLevel, j, i, " ");
 
-    mvwprintw(windowInformations, 2, 1, "Map Clean");
+    mvwprintw(windowInformations, 2, 1, "Map Clean               ");
 }
 
 // Initialisation des outils

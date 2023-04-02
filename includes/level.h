@@ -29,7 +29,22 @@ typedef struct
 {
     wint_t cells[nblignes * nbCols];
     int colors[nblignes * nbCols];
+    pthread_mutex_t mutex[nblignes * nbCols];
 } level_t;
+
+typedef struct
+{
+    int actif;
+    int pos;
+    pthread_t *thread;
+} robot_t;
+
+typedef struct
+{
+    int actif;
+    int pos;
+    pthread_t *thread;
+} probe_t;
 
 level_t loadLevel(int, tableAdressage_t *, char *);
 void init_matLevel(level_t *);
